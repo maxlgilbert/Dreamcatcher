@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class BeatManager : MonoBehaviour {
+	public float gravity = -9.81f;
 
 	private static BeatManager instance;
 	
@@ -14,6 +15,7 @@ public class BeatManager : MonoBehaviour {
 	}
 	void Awake() {
 		instance = this;
+		Physics.gravity = new Vector3(0, gravity, 0);
 	}
 
 	// Use this for initialization
