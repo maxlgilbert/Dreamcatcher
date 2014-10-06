@@ -1,13 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/* Things our main character needs:
- * speed
- * movement
- * groundedness
- * constrained movements to the beat
- */
-
 public class MainCharacter : MonoBehaviour {
 	// Constants
 	const float PADDING = 0.05f;
