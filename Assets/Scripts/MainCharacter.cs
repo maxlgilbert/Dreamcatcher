@@ -11,17 +11,22 @@ using System.Collections;
 public class MainCharacter : MonoBehaviour {
 	// Constants
 	const float PADDING = 0.05f;
+	const float BEAT_WINDOW = 1.0f;
 
 	float horizontalSpeed;
 	float verticalForce;
 	bool isGrounded;
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
+	bool onBeat;
 
 	void Start () {
+		BeatManager.Instance.Beat += BeatHandler;
+
 		horizontalSpeed = 5.0f;
 		verticalForce = 170.0f;
 		isGrounded = true;
 		isCollidingWithWall = false;
+		onBeat = false;
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider)
@@ -43,30 +48,42 @@ public class MainCharacter : MonoBehaviour {
 
 	// Handles movement with arrow keys
 	private void CheckInput() {
-		if (Input.GetKey("up") && isGrounded) {
-			gameObject.rigidbody.AddRelativeForce(new Vector3(0, verticalForce, 0));
-		} else if (Input.GetKey("down")) {
-			Debug.Log("down lol");
-		} else if (Input.GetKey("left") && !isCollidingWithWall) {
-			rigidbody.velocity = new Vector3(-horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
-		} else if (Input.GetKey("right") && !isCollidingWithWall) {
-			rigidbody.velocity = new Vector3(horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
-        }
+
+		if (onBeat) {
+			if (Input.GetKey("up") && isGrounded) {
+				gameObject.rigidbody.AddRelativeForce(new Vector3(0, verticalForce, 0));
+			} else if (Input.GetKey("down")) {
+				Debug.Log("down lol");
+			} else if (Input.GetKey("left") && !isCollidingWithWall) {
+				rigidbody.velocity = new Vector3(-horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			} else if (Input.GetKey("right") && !isCollidingWithWall) {
+				rigidbody.velocity = new Vector3(horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+	        }
+		}
 	}
+
+	private void CloseBeatWindow() {
+		onBeat = false;
+	}
+		
+	private void BeatHandler(BeatManager beatManager) {
+		Debug.Log("Daisy heard the beat!");
+		onBeat = true;
+		Invoke("CloseBeatWindow", BEAT_WINDOW);
+        
+    }
 
 	void OnCollisionEnter(Collision col) {
 		if (col.gameObject.tag == "Environment" && !isGrounded) {
-			Debug.Log ("true");
 			isCollidingWithWall = true;
 		}
 	}
 
 	void OnCollisionExit() {
-		Debug.Log ("false");
 		isCollidingWithWall = false;
 	}
 
-	void Update () {
+	void Update() {
 		CheckGroundedness();
 		CheckInput();
 	}

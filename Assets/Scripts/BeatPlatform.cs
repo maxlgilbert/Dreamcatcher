@@ -13,7 +13,7 @@ public class BeatPlatform : MonoBehaviour {
 	
 	}
 
-	private void BeatHandler (BeatManager beatManeger) {
+	private void BeatHandler (BeatManager beatManager) {
 		Debug.Log("Beat fired!");
 	}
 }
