@@ -20,6 +20,8 @@ public class MainCharacter : MonoBehaviour {
 		isGrounded = true;
 		isCollidingWithWall = false;
 		onBeat = false;
+
+		this.gameObject.renderer.enabled = false;
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider)
