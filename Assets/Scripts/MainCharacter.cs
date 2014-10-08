@@ -24,7 +24,8 @@ public class MainCharacter : MonoBehaviour {
 		this.gameObject.renderer.enabled = false;
 	}
 
-	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider)
+	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider).
+	// See the Debug ray drawing in	scene window (turns green on hit).
     private void CheckGroundedness() {
 		int numRays = 3;
 		float raycastPadding = 0.2f;
@@ -32,7 +33,10 @@ public class MainCharacter : MonoBehaviour {
 			float originX = collider.bounds.center.x + ((i-1) * collider.bounds.extents.x);
 			if (i == 0) originX += raycastPadding;
 			else if (i == numRays - 1) originX -= raycastPadding;
-			Vector3 origin = new Vector3 (originX, collider.bounds.center.y);
+
+			// Start the ray at the center of the object, because, if it were at the very bottom, it 
+			// might not detect groundedness when resting on an object
+			Vector3 origin = new Vector3 (originX, collider.bounds.center.y, collider.bounds.center.z);
 			Vector3 direction = new Vector3(0, -1.0f, 0);
 
 			// Perform raycast and determine groundedness. Draw Debug rays
