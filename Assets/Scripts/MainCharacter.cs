@@ -12,16 +12,19 @@ public class MainCharacter : MonoBehaviour {
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
 	bool onBeat;
 
+	private Camera _mainCamera;
+
 	void Start () {
 		BeatManager.Instance.Beat += BeatHandler;
 
 		horizontalSpeed = 5.0f;
-		verticalForce = 150.0f;
+		verticalForce =8.0f;
 		isGrounded = true;
 		isCollidingWithWall = false;
 		onBeat = false;
 
 		this.gameObject.renderer.enabled = false;
+		_mainCamera = Camera.main;
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider).
@@ -58,7 +61,8 @@ public class MainCharacter : MonoBehaviour {
 
 		if (onBeat) {
 			if (Input.GetKey("up") && isGrounded) {
-				gameObject.rigidbody.AddRelativeForce(new Vector3(0, verticalForce, 0));
+				//gameObject.rigidbody.AddRelativeForce(new Vector3(0, verticalForce, 0));
+				rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalForce, rigidbody.velocity.z);
 				Debug.Log("up");
 
 			} else if (Input.GetKey("down")) {
@@ -95,5 +99,8 @@ public class MainCharacter : MonoBehaviour {
 	void Update() {
 		CheckGroundedness();
 		CheckInput();
+		_mainCamera.transform.position = new Vector3(gameObject.transform.position.x,
+		                                             _mainCamera.transform.position.y,
+		                                             _mainCamera.transform.position.z);
 	}
 }

@@ -4,6 +4,8 @@ using System.Collections;
 public class BeatManager : MonoBehaviour {
 	public float gravity = -9.81f;
 
+	public AudioClip beatSound;
+
 	private static BeatManager instance;
 	
 	public static BeatManager Instance
@@ -20,19 +22,26 @@ public class BeatManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		StartCoroutine("BeatUpdate");
 	}
 	public delegate void BeatEventHandler(BeatManager beatManager);
 	public event BeatEventHandler Beat;
 
 	public void OnBeat() {
 		if (Beat!=null) {
+			AudioSource.PlayClipAtPoint(beatSound,Camera.main.transform.position);
 			Beat(this);
 		}
 	}
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown("space")){
+			//OnBeat();
+		}
+	}
+	IEnumerator BeatUpdate() {
+		while(true) {
+			yield return new WaitForSeconds(2.0f);
 			OnBeat();
 		}
 	}
