@@ -7,8 +7,9 @@ public class MainCharacter : MonoBehaviour {
 	const float BEAT_WINDOW = 1.0f;
 	const float SECONDARY_KEY_WINDOW = 0.05f;
 
-	float horizontalSpeed;
-	float verticalForce;
+	float horizontalGroundSpeed;
+	float horizontalAirSpeed; // either we adjust friction, or just tune air vs. ground speed. Playing w/ friction may cause slip/slide issues
+	float verticalSpeed;
 	bool isGrounded;
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
 	bool onBeat; // The beat window is open for BEAT_WINDOW seconds when this is true
@@ -20,10 +21,14 @@ public class MainCharacter : MonoBehaviour {
 	private Camera _mainCamera;
 
 	void Start() {
+		// TODO: put this in a game manager
+		Physics.gravity = new Vector3(0, -30.0f, 0);
+
 		BeatManager.Instance.Beat += BeatHandler;
 
-		horizontalSpeed = 8.0f;
-		verticalForce = 8.0f;
+		horizontalGroundSpeed = 16.0f; // 4:1 ratio seems solid
+		horizontalAirSpeed = 4.0f;
+		verticalSpeed = 12.0f;
 		isGrounded = true;
 		isCollidingWithWall = false;
 		onBeat = false;
@@ -73,15 +78,15 @@ public class MainCharacter : MonoBehaviour {
 	private void CloseSecondaryKeyWindow() {
 		waitingForSecondaryKey = false;
 		if (savedKey == "up") {
-			rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalForce, rigidbody.velocity.z);
+			rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalSpeed, rigidbody.velocity.z);
 			hasMovedOnBeat = true;
 			Debug.Log("up");
 		} else if (savedKey == "left") {
-			rigidbody.velocity = new Vector3(-horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			rigidbody.velocity = new Vector3(-horizontalGroundSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
 			hasMovedOnBeat = true;
 			Debug.Log("left");
 		} else if (savedKey == "right") {
-			rigidbody.velocity = new Vector3(horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			rigidbody.velocity = new Vector3(horizontalGroundSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
 			hasMovedOnBeat = true;
 			Debug.Log("right");
 		}
@@ -101,7 +106,7 @@ public class MainCharacter : MonoBehaviour {
 				if ((Input.GetKey("left") && savedKey == "up") || (Input.GetKey("up") && savedKey == "left") ) {
 					waitingForSecondaryKey = false;
 					CancelInvoke("CloseSecondaryKeyWindow");
-					rigidbody.velocity = new Vector3(-horizontalSpeed, verticalForce, rigidbody.velocity.z);
+					rigidbody.velocity = new Vector3(-horizontalAirSpeed, verticalSpeed, rigidbody.velocity.z);
 					hasMovedOnBeat = true;
 					Debug.Log("up left");
 				}
@@ -109,7 +114,7 @@ public class MainCharacter : MonoBehaviour {
 				else if ((Input.GetKey("right")  && savedKey == "up") || (Input.GetKey("up") && savedKey == "right")) {
 					waitingForSecondaryKey = false;
 					CancelInvoke("CloseSecondaryKeyWindow");
-					rigidbody.velocity = new Vector3(horizontalSpeed, verticalForce, rigidbody.velocity.z);
+					rigidbody.velocity = new Vector3(horizontalAirSpeed, verticalSpeed, rigidbody.velocity.z);
 					hasMovedOnBeat = true;
 					Debug.Log("up right");
 				}
