@@ -5,6 +5,7 @@ public class MainCharacter : MonoBehaviour {
 	// Constants
 	const float PADDING = 0.05f;
 	const float BEAT_WINDOW = 1.0f;
+	const float SECONDARY_KEY_WINDOW = 0.05f;
 
 	float horizontalSpeed;
 	float verticalForce;
@@ -13,16 +14,23 @@ public class MainCharacter : MonoBehaviour {
 	bool onBeat; // The beat window is open for BEAT_WINDOW seconds when this is true
 	bool hasMovedOnBeat; // Whether or not we have moved once on the current beat
 
+	string savedKey;
+	bool waitingForSecondaryKey;
+
 	private Camera _mainCamera;
 
 	void Start() {
 		BeatManager.Instance.Beat += BeatHandler;
 
-		horizontalSpeed = 5.0f;
+		horizontalSpeed = 8.0f;
 		verticalForce = 8.0f;
 		isGrounded = true;
 		isCollidingWithWall = false;
 		onBeat = false;
+		hasMovedOnBeat = false;
+		
+		savedKey = "";
+		waitingForSecondaryKey = false;
 
 		this.gameObject.renderer.enabled = false;
 		_mainCamera = Camera.main;
@@ -58,22 +66,68 @@ public class MainCharacter : MonoBehaviour {
         };
 	}
 
+	// Callback at the end of the secondary key window. If a key combo was not detected for the duration of the 
+	// secondary key window period (up+left/up+right), close the window and perform the action of the saved key
+	// This seems annoying but we need to do this to truly ensure 1 movement per beat. Otherwise other keypresses
+	// will leak through during the beat window.
+	private void CloseSecondaryKeyWindow() {
+		waitingForSecondaryKey = false;
+		if (savedKey == "up") {
+			rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalForce, rigidbody.velocity.z);
+			hasMovedOnBeat = true;
+			Debug.Log("up");
+		} else if (savedKey == "left") {
+			rigidbody.velocity = new Vector3(-horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			hasMovedOnBeat = true;
+			Debug.Log("left");
+		} else if (savedKey == "right") {
+			rigidbody.velocity = new Vector3(horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			hasMovedOnBeat = true;
+			Debug.Log("right");
+		}
+
+		savedKey = "";
+	}
+
 	// Handles movement with arrow keys
 	private void CheckInput() {
 
 		if (onBeat && !hasMovedOnBeat) {
-			if (Input.GetKey("up") && isGrounded) {
-				rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalForce, rigidbody.velocity.z);
-				hasMovedOnBeat = true;
-				Debug.Log("up");
-			} else if (Input.GetKey("down")) {
-				Debug.Log("down lol");
+
+			// This means up/left/right was pressed earlier, and our secondary key window is open
+			if (waitingForSecondaryKey) {
+
+				// If found left+up combo, close window and cancelInvoke. Then set velocity to up left
+				if ((Input.GetKey("left") && savedKey == "up") || (Input.GetKey("up") && savedKey == "left") ) {
+					waitingForSecondaryKey = false;
+					CancelInvoke("CloseSecondaryKeyWindow");
+					rigidbody.velocity = new Vector3(-horizontalSpeed, verticalForce, rigidbody.velocity.z);
+					hasMovedOnBeat = true;
+					Debug.Log("up left");
+				}
+				// If found right+up combo, close window and cancelInvoke. Then set velocity to up right
+				else if ((Input.GetKey("right")  && savedKey == "up") || (Input.GetKey("up") && savedKey == "right")) {
+					waitingForSecondaryKey = false;
+					CancelInvoke("CloseSecondaryKeyWindow");
+					rigidbody.velocity = new Vector3(horizontalSpeed, verticalForce, rigidbody.velocity.z);
+					hasMovedOnBeat = true;
+					Debug.Log("up right");
+				}
+
+			} else if (Input.GetKey("up") && isGrounded) {
+				waitingForSecondaryKey = true;
+				savedKey = "up";
+				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
+
 			} else if (Input.GetKey("left") && !isCollidingWithWall) {
-				rigidbody.velocity = new Vector3(-horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
-				hasMovedOnBeat = true;
+				waitingForSecondaryKey = true;
+				savedKey = "left";
+				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
+
 			} else if (Input.GetKey("right") && !isCollidingWithWall) {
-				rigidbody.velocity = new Vector3(horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
-				hasMovedOnBeat = true;
+				waitingForSecondaryKey = true;
+				savedKey = "right";
+				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
 	        }
 		}
 	}
