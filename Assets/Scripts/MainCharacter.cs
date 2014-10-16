@@ -10,15 +10,16 @@ public class MainCharacter : MonoBehaviour {
 	float verticalForce;
 	bool isGrounded;
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
-	bool onBeat;
+	bool onBeat; // The beat window is open for BEAT_WINDOW seconds when this is true
+	bool hasMovedOnBeat; // Whether or not we have moved once on the current beat
 
 	private Camera _mainCamera;
 
-	void Start () {
+	void Start() {
 		BeatManager.Instance.Beat += BeatHandler;
 
 		horizontalSpeed = 5.0f;
-		verticalForce =8.0f;
+		verticalForce = 8.0f;
 		isGrounded = true;
 		isCollidingWithWall = false;
 		onBeat = false;
@@ -31,7 +32,8 @@ public class MainCharacter : MonoBehaviour {
 	// See the Debug ray drawing in	scene window (turns green on hit).
     private void CheckGroundedness() {
 		int numRays = 3;
-		float raycastPadding = 0.2f;
+		float raycastPadding = 0.2f; // padding on leftmost and rightmost side to avoid buggy behavior against walls
+
 		for (int i = 0; i < numRays; i++) {
 			float originX = collider.bounds.center.x + ((i-1) * collider.bounds.extents.x);
 			if (i == 0) originX += raycastPadding;
@@ -59,24 +61,26 @@ public class MainCharacter : MonoBehaviour {
 	// Handles movement with arrow keys
 	private void CheckInput() {
 
-		if (onBeat) {
+		if (onBeat && !hasMovedOnBeat) {
 			if (Input.GetKey("up") && isGrounded) {
-				//gameObject.rigidbody.AddRelativeForce(new Vector3(0, verticalForce, 0));
 				rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalForce, rigidbody.velocity.z);
+				hasMovedOnBeat = true;
 				Debug.Log("up");
-
 			} else if (Input.GetKey("down")) {
 				Debug.Log("down lol");
 			} else if (Input.GetKey("left") && !isCollidingWithWall) {
 				rigidbody.velocity = new Vector3(-horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+				hasMovedOnBeat = true;
 			} else if (Input.GetKey("right") && !isCollidingWithWall) {
 				rigidbody.velocity = new Vector3(horizontalSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+				hasMovedOnBeat = true;
 	        }
 		}
 	}
 
 	private void CloseBeatWindow() {
 		onBeat = false;
+		hasMovedOnBeat = false;
 	}
 		
 	private void BeatHandler(BeatManager beatManager) {
