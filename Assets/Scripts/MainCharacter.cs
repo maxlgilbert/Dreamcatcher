@@ -19,6 +19,7 @@ public class MainCharacter : MonoBehaviour {
 	bool waitingForSecondaryKey;
 
 	private Camera _mainCamera;
+	private Action _currentAction;
 
 	void Start() {
 		// TODO: put this in a game manager
@@ -39,6 +40,7 @@ public class MainCharacter : MonoBehaviour {
 
 		this.gameObject.renderer.enabled = false;
 		_mainCamera = Camera.main;
+		_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider).
@@ -78,15 +80,18 @@ public class MainCharacter : MonoBehaviour {
 	private void CloseSecondaryKeyWindow() {
 		waitingForSecondaryKey = false;
 		if (savedKey == "up") {
-			rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalSpeed, rigidbody.velocity.z);
+			//rigidbody.velocity = new Vector3(rigidbody.velocity.y, verticalSpeed, rigidbody.velocity.z);
+			MoveToInTime(rigidbody.position + new Vector3(0.0f,3.6f,0.0f),.3f);
 			hasMovedOnBeat = true;
 			Debug.Log("up");
 		} else if (savedKey == "left") {
-			rigidbody.velocity = new Vector3(-horizontalGroundSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			//rigidbody.velocity = new Vector3(-horizontalGroundSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			MoveToInTime(rigidbody.position + new Vector3(-4.8f,0.0f,0.0f),.3f);
 			hasMovedOnBeat = true;
 			Debug.Log("left");
 		} else if (savedKey == "right") {
-			rigidbody.velocity = new Vector3(horizontalGroundSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			//rigidbody.velocity = new Vector3(horizontalGroundSpeed, rigidbody.velocity.y, rigidbody.velocity.z);
+			MoveToInTime(rigidbody.position + new Vector3(4.8f,0.0f,0.0f),.3f);
 			hasMovedOnBeat = true;
 			Debug.Log("right");
 		}
@@ -106,7 +111,8 @@ public class MainCharacter : MonoBehaviour {
 				if ((Input.GetKey("left") && savedKey == "up") || (Input.GetKey("up") && savedKey == "left") ) {
 					waitingForSecondaryKey = false;
 					CancelInvoke("CloseSecondaryKeyWindow");
-					rigidbody.velocity = new Vector3(-horizontalAirSpeed, verticalSpeed, rigidbody.velocity.z);
+					//rigidbody.velocity = new Vector3(-horizontalAirSpeed, verticalSpeed, rigidbody.velocity.z);
+					MoveToInTime(rigidbody.position + new Vector3(-4.8f,3.6f,0.0f),.3f);
 					hasMovedOnBeat = true;
 					Debug.Log("up left");
 				}
@@ -114,12 +120,13 @@ public class MainCharacter : MonoBehaviour {
 				else if ((Input.GetKey("right")  && savedKey == "up") || (Input.GetKey("up") && savedKey == "right")) {
 					waitingForSecondaryKey = false;
 					CancelInvoke("CloseSecondaryKeyWindow");
-					rigidbody.velocity = new Vector3(horizontalAirSpeed, verticalSpeed, rigidbody.velocity.z);
+					//rigidbody.velocity = new Vector3(horizontalAirSpeed, verticalSpeed, rigidbody.velocity.z);
+					MoveToInTime(rigidbody.position + new Vector3(4.8f,3.6f,0.0f),.3f);
 					hasMovedOnBeat = true;
 					Debug.Log("up right");
 				}
 
-			} else if (Input.GetKey("up") && isGrounded) {
+			} else if (Input.GetKey("up")){// && isGrounded) {
 				waitingForSecondaryKey = true;
 				savedKey = "up";
 				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
@@ -155,6 +162,12 @@ public class MainCharacter : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerEnter(Collider col) {
+		if (col.gameObject.tag == "Obstacle") {
+			_currentAction.OnCollision();
+		}
+	}
+
 	void OnCollisionExit() {
 		isCollidingWithWall = false;
 	}
@@ -165,5 +178,24 @@ public class MainCharacter : MonoBehaviour {
 		_mainCamera.transform.position = new Vector3(gameObject.transform.position.x,
 		                                             _mainCamera.transform.position.y,
 		                                             _mainCamera.transform.position.z);
+	}
+
+	public void MoveToInTime (Vector3 target, float duration){
+		StopCoroutine("MoveToInTimeCoroutine");
+		_currentAction.returnPt = rigidbody.position;
+		_currentAction.endPt = target;
+		_currentAction.duration = duration;
+		StartCoroutine(MoveToInTimeCoroutine(target,duration));
+	}
+
+	IEnumerator MoveToInTimeCoroutine(Vector3 target, float duration){
+		float horizontalVelocity = 0.0f;
+		float verticalVelocity = 0.0f;
+		horizontalVelocity = (target.x - rigidbody.position.x)/duration;
+		verticalVelocity = (target.y - rigidbody.position.y)/duration;
+		rigidbody.velocity = new Vector3(horizontalVelocity, verticalVelocity, rigidbody.velocity.z);
+		yield return new WaitForSeconds(duration);
+		rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
+		rigidbody.MovePosition(target);
 	}
 }
