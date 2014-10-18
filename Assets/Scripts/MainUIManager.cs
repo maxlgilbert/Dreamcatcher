@@ -10,19 +10,26 @@ public class MainUIManager : MonoBehaviour {
 	public GUIText timeElapsed;
 	
 	void Start() {
-	
+		Restart();
+	}
+
+	void Restart() {
+		paused = false;
 	}
 
 	private void DrawPauseMenu() {
 		// TODO: make sure it doesn't read any game inputs during pause other than P
+		// TODO: figure out how to reload entire level (time and all) when wi-fi exists
 		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2, BUTTON_WIDTH, BUTTON_HEIGHT), "Resume")) {
 			Debug.Log("Resume");
 		}
 		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2 + 50, BUTTON_WIDTH, BUTTON_HEIGHT), "Restart")) {
 			Application.LoadLevel("MainScene");
+			Time.timeScale = 1;
 		}
 		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2 + 100, BUTTON_WIDTH, BUTTON_HEIGHT), "Quit")) {
 			Application.LoadLevel("StartScene");
+			Time.timeScale = 1;
 		}
 	}
 
