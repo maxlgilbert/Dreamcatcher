@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: a650a05bae220469d8493cbc44d8e735
+guid: f5d8d3bf93f81402885af383160403fd
 TextureImporter:
   fileIDToRecycleName:
-    21300000: distmeter-bar
+    21300000: beat-indicator-icon
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
