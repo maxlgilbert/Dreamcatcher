@@ -20,6 +20,7 @@ public class CellGridManager : MonoBehaviour {
 	
 	public Material ground;
 	public Material obstacle;
+	public Material empty;
 
 	private static CellGridManager instance;
 	

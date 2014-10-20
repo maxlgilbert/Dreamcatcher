@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class CellAction : AStarAction {
 	public int directionX;
 	public int directionY;
+
 	// Use this for initialization
 	void Start () {
 	

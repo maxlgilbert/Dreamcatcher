@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Action {
-	public Vector3 returnPt;
+	/*public Vector3 returnPt;
 	public Vector3 endPt;
 	public float duration;
 	public Character character;
@@ -14,5 +14,5 @@ public class Action {
 	}
 	public void OnCollision  () {
 		character.MoveToInTime(returnPt,duration);
-	}
+	}*/
 }

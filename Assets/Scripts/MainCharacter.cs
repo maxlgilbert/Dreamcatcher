@@ -39,7 +39,7 @@ public class MainCharacter : Character {
 	protected override void Initialize ()
 	{
 		base.Initialize ();
-		_currentCell = startCell.cellNode;
+		_currentCell = startCell;
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider).
@@ -79,38 +79,29 @@ public class MainCharacter : Character {
 	private void CloseSecondaryKeyWindow() {
 		waitingForSecondaryKey = false;
 		if (savedKey == "up") {
-			List<AStarNode> neighbors = CellGridManager.Instance.up.TryAction(_currentCell);
-			if (neighbors.Count > 0) {
+			//List<AStarNode> neighbors = CellGridManager.Instance.up.TryAction(_currentCell);
+			//if (neighbors.Count > 0) {
 //				_currentCell = neighbors[0] as CellNode;
 //				MoveToInTime(rigidbody.position + new Vector3(0.0f,3,0.0f),.3f);
 				ExecuteCellAction(CellGridManager.Instance.up);
 				hasMovedOnBeat = true; //IN HERE????
 				Debug.Log("up");
-			} else {
-				Debug.Log("No cell available");
-			}
 		} else if (savedKey == "left") {
-			List<AStarNode> neighbors = CellGridManager.Instance.left.TryAction(_currentCell);
-			if (neighbors.Count > 0) {
+			//List<AStarNode> neighbors = CellGridManager.Instance.left.TryAction(_currentCell);
+			//if (neighbors.Count > 0) {
 //				_currentCell = neighbors[0] as CellNode;
 //				MoveToInTime(rigidbody.position + new Vector3(-3.0f,0.0f,0.0f),.3f);
 				ExecuteCellAction(CellGridManager.Instance.left);
 				hasMovedOnBeat = true;
 				Debug.Log("left");
-			} else {
-				Debug.Log("No cell available");
-			}
 		} else if (savedKey == "right") {
-			List<AStarNode> neighbors = CellGridManager.Instance.right.TryAction(_currentCell);
-			if (neighbors.Count > 0) {
+			//List<AStarNode> neighbors = CellGridManager.Instance.right.TryAction(_currentCell);
+			//if (neighbors.Count > 0) {
 //				_currentCell = neighbors[0] as CellNode;
 //				MoveToInTime(rigidbody.position + new Vector3(3.0f,0.0f,0.0f),.3f);
 				ExecuteCellAction(CellGridManager.Instance.right);
 				hasMovedOnBeat = true;
 				Debug.Log("right");
-			} else {
-				Debug.Log("No cell available");
-			}
 		}
 
 		savedKey = "";
@@ -128,31 +119,21 @@ public class MainCharacter : Character {
 				if ((Input.GetKey("left") && savedKey == "up") || (Input.GetKey("up") && savedKey == "left") ) {
 					waitingForSecondaryKey = false;
 					CancelInvoke("CloseSecondaryKeyWindow");
-					List<AStarNode> neighbors = CellGridManager.Instance.upLeft.TryAction(_currentCell);
-					if (neighbors.Count > 0) {
 //						_currentCell = neighbors[0] as CellNode;
 //						MoveToInTime(rigidbody.position + new Vector3(-3.0f,3.0f,0.0f),.3f);
 						ExecuteCellAction(CellGridManager.Instance.upLeft);
 						hasMovedOnBeat = true;
 						Debug.Log("up left");
-					} else {
-						Debug.Log("No cell available");
-					}
 				}
 				// If found right+up combo, close window and cancelInvoke. Then set velocity to up right
 				else if ((Input.GetKey("right")  && savedKey == "up") || (Input.GetKey("up") && savedKey == "right")) {
 					waitingForSecondaryKey = false;
 					CancelInvoke("CloseSecondaryKeyWindow");
-					List<AStarNode> neighbors = CellGridManager.Instance.upRight.TryAction(_currentCell);
-					if (neighbors.Count > 0) {
 //						_currentCell = neighbors[0] as CellNode;
 //						MoveToInTime(rigidbody.position + new Vector3(3.0f,3.0f,0.0f),.3f);
 						ExecuteCellAction(CellGridManager.Instance.upRight);
 						hasMovedOnBeat = true;
 						Debug.Log("up right");
-					} else {
-						Debug.Log("No cell available");
-					}
 				}
 
 			} else if (Input.GetKey("up")){// && isGrounded) {
@@ -205,7 +186,7 @@ public class MainCharacter : Character {
 
 	void OnTriggerEnter(Collider col) {
 		if (col.gameObject.tag == "Obstacle") {
-			_currentAction.OnCollision();
+			//_currentAction.OnCollision();
 		} else if (col.gameObject.tag == "Ground") {
 			MoveToInTime(rigidbody.position,0.0f);
 		}

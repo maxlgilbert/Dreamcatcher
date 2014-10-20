@@ -17,10 +17,12 @@ public class CellObject : MonoBehaviour {
 	void Start () {
 		cellNode = new CellNode(x,y);
 		CellGridManager.Instance.AddCell(this);
-		if (cellType == CellType.Ground || cellType == CellType.Empty) {
+		if (cellType == CellType.Ground) {
 			renderer.material = CellGridManager.Instance.ground;
-		} else {
+		} else if (cellType == CellType.Obstacle){
 			renderer.material = CellGridManager.Instance.obstacle;
+		} else {
+			renderer.material = CellGridManager.Instance.empty;
 		}
 	}
 	
