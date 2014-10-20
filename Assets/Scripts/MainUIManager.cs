@@ -31,6 +31,8 @@ public class MainUIManager : MonoBehaviour {
 		// TODO: figure out how to reload entire level (time and all) when wi-fi exists
 		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2, BUTTON_WIDTH, BUTTON_HEIGHT), "Resume")) {
 			Debug.Log("Resume");
+			paused = false;
+			Time.timeScale = 1;
 		}
 		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2 + 50, BUTTON_WIDTH, BUTTON_HEIGHT), "Restart")) {
 			Application.LoadLevel("MainScene");
