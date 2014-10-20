@@ -7,7 +7,7 @@ public class CellGridManager : MonoBehaviour {
 	public AStarNode goal;
 	public int width;
 	public int height;
-	private CellNode[,] _allCellNodes;
+	private CellObject[,] _allCellNodes;
 	[HideInInspector] public List<CellAction> CellActions;
 	public CellAction left;
 	public CellAction upLeft;
@@ -37,7 +37,7 @@ public class CellGridManager : MonoBehaviour {
 		CellActions.Add(upRight);
 		CellActions.Add(right);
 		CellActions.Add(wait);
-		_allCellNodes = new CellNode[width,height];
+		_allCellNodes = new CellObject[width,height];
 	}
 
 	// Use this for initialization
@@ -50,17 +50,17 @@ public class CellGridManager : MonoBehaviour {
 	
 	}
 
-	public void AddCell (CellNode cellNode) {
-		int x = cellNode.x;
-		int y = cellNode.y;
+	public void AddCell (CellObject cellObject) {
+		int x = cellObject.cellNode.x;
+		int y = cellObject.cellNode.y;
 		if (x < width && y < height) {
-			_allCellNodes[x,y] = cellNode;
+			_allCellNodes[x,y] = cellObject;
 		} else {
 			Debug.LogError("Tried adding out of bounds cell!");
 		}
 	}
 
-	public CellNode GetCell (int x, int y) {
+	public CellObject GetCell (int x, int y) {
 		if (x >= 0 && y >= 0 && x < width && y < height) {
 			return _allCellNodes[x,y];
 		}
