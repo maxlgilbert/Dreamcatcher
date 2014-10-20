@@ -8,7 +8,8 @@ public class CellGridManager : MonoBehaviour {
 	public int width;
 	public int height;
 	private CellObject[,] _allCellNodes;
-	[HideInInspector] public List<CellAction> CellActions;
+	[HideInInspector] public CellAction[,] CellActions;
+	[HideInInspector] public List<AStarAction> actions;
 	public CellAction left;
 	public CellAction upLeft;
 	public CellAction up;
@@ -30,13 +31,19 @@ public class CellGridManager : MonoBehaviour {
 	/// </summary>
 	void Awake () {
 		instance = this;
-		CellActions = new List<CellAction>();
-		CellActions.Add(left);
-		CellActions.Add(upLeft);
-		CellActions.Add(up);
-		CellActions.Add(upRight);
-		CellActions.Add(right);
-		CellActions.Add(wait);
+		CellActions = new CellAction[3,3];
+		CellActions[0,1] = left;
+		CellActions[0,2] = upLeft;
+		CellActions[1,2] = up;
+		CellActions[2,2] = upRight;
+		CellActions[2,1] = right;
+		CellActions[1,1] = wait;
+		actions.Add(left);
+		actions.Add(upLeft);
+		actions.Add(up);
+		actions.Add(upRight);
+		actions.Add(right);
+		actions.Add(wait);
 		_allCellNodes = new CellObject[width,height];
 	}
 
