@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CellGridManager : MonoBehaviour {
 	public AStarNode start;
@@ -7,6 +8,13 @@ public class CellGridManager : MonoBehaviour {
 	public int width;
 	public int height;
 	private CellNode[,] _allCellNodes;
+	[HideInInspector] public List<CellAction> CellActions;
+	public CellAction left;
+	public CellAction upLeft;
+	public CellAction up;
+	public CellAction upRight;
+	public CellAction right;
+	public CellAction wait;
 
 	private static CellGridManager instance;
 	
@@ -22,6 +30,13 @@ public class CellGridManager : MonoBehaviour {
 	/// </summary>
 	void Awake () {
 		instance = this;
+		CellActions = new List<CellAction>();
+		CellActions.Add(left);
+		CellActions.Add(upLeft);
+		CellActions.Add(up);
+		CellActions.Add(upRight);
+		CellActions.Add(right);
+		CellActions.Add(wait);
 		_allCellNodes = new CellNode[width,height];
 	}
 
@@ -46,7 +61,7 @@ public class CellGridManager : MonoBehaviour {
 	}
 
 	public CellNode GetCell (int x, int y) {
-		if (x < width && y < height) {
+		if (x >= 0 && y >= 0 && x < width && y < height) {
 			return _allCellNodes[x,y];
 		}
 		return null;

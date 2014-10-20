@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class AStarAction : MonoBehaviour {
-	public int numberAvailable;
+	//public int numberAvailable;
 	public string identification;
 	protected List<AStarNode> _possibleNeighbors;
 
