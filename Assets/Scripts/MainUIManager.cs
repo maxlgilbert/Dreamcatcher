@@ -21,6 +21,7 @@ public class MainUIManager : MonoBehaviour {
 	public GUIText distanceAway;
 	public GUITexture beatIndicator;
 	public GameObject overlayPlane;
+	public GameObject overlayBottomBarPlane;
 
 	void Start() {
 		BeatManager.Instance.Beat += BeatHandler;
@@ -129,6 +130,7 @@ public class MainUIManager : MonoBehaviour {
 		timeElapsed.text = Mathf.Round(Time.time).ToString();
 		distanceAway.text =  Mathf.RoundToInt(END_X - daisy.transform.position.x) + " m";
 		overlayPlane.transform.position = new Vector3(Camera.main.transform.position.x, overlayPlane.transform.position.y, overlayPlane.transform.position.z);
+		overlayBottomBarPlane.transform.position = new Vector3(Camera.main.transform.position.x, overlayBottomBarPlane.transform.position.y, overlayBottomBarPlane.transform.position.z);
 
 		if (Input.GetKeyUp(KeyCode.P)) {
 			paused = !paused;
