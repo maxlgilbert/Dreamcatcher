@@ -21,10 +21,7 @@ public class Character : MonoBehaviour {
 		verticalSpeed = 12.0f;
 		
 		_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
-		if (startCell.cellNode == null) {
-			Debug.LogError("hmmmm");
-		}
-		_currentCell = startCell.cellNode;
+		//_currentCell = startCell.cellNode; TODO better way?
 	}
 	
 	// Update is called once per frame
@@ -38,11 +35,8 @@ public class Character : MonoBehaviour {
 	}
 
 	public void ExecuteCellAction (CellAction cellAction) {
-		if (cellAction == null) {
-			Debug.LogError("wtf1");
-		}
 		if (_currentCell == null) {
-			Debug.LogError("wtf2");
+			_currentCell = startCell.cellNode; // TODO
 		}
 		_currentCell = CellGridManager.Instance.GetCell(_currentCell.x+cellAction.directionX,_currentCell.y+cellAction.directionY).cellNode;
 		MoveToInTime(rigidbody.position+new Vector3(cellAction.directionX*4.8f,cellAction.directionY*3.6f,0.0f),.3f);

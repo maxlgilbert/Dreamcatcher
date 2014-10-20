@@ -12,10 +12,10 @@ public class CellObject : MonoBehaviour {
 
 	public CellType cellType;
 	void Awake () {
-		cellNode = new CellNode(x,y);
 	}
 	// Use this for initialization
 	void Start () {
+		cellNode = new CellNode(x,y);
 		CellGridManager.Instance.AddCell(this);
 	}
 	

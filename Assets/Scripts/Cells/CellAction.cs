@@ -26,4 +26,10 @@ public class CellAction : AStarAction {
 		}
 		return neighborList;
 	} 
+
+	public static CellAction GetAction (CellNode from, CellNode to) {
+		int dirX = to.x - from.x+1;
+		int dirY = to.y - from.y+1;
+		return CellGridManager.Instance.CellActions[dirX,dirY];
+	}
 }
