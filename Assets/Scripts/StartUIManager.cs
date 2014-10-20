@@ -10,11 +10,11 @@ public class StartUIManager : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2, BUTTON_WIDTH, BUTTON_HEIGHT), "Play")) {
+		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2 + 10, BUTTON_WIDTH, BUTTON_HEIGHT), "Play")) {
 			Debug.Log("Play");
 			Application.LoadLevel("MainScene");
 		}
-		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2 + 50, BUTTON_WIDTH, BUTTON_HEIGHT), "About")) {
+		if (GUI.Button(new Rect(Screen.width/2 - BUTTON_WIDTH/2, Screen.height/2 + 60, BUTTON_WIDTH, BUTTON_HEIGHT), "About")) {
 			Debug.Log("About");
 		}
 	}
