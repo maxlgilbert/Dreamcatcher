@@ -3,10 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class AICharacter : Character {
-	private List<CellAction> _plan;
+	public List<CellAction> _plan;
+	private int _step;
 
 	void Awake () {
-		_plan = new List<CellAction>();
+		//_plan = new List<CellAction>();
+		_step = 0;
+	}
+
+	void Start () {
+		Initialize();
+	}
+
+	protected override void Initialize ()
+	{
+		base.Initialize ();
 	}
 	// Update is called once per frame
 	void Update () {
@@ -14,6 +25,9 @@ public class AICharacter : Character {
 	}
 
 	protected override void BeatHandler(BeatManager beatManager) {
-
+		if (_step < _plan.Count){
+			ExecuteCellAction(_plan[_step]);
+			_step++;
+		}
 	}
 }
