@@ -165,6 +165,8 @@ public class MainCharacter : MonoBehaviour {
 	void OnTriggerEnter(Collider col) {
 		if (col.gameObject.tag == "Obstacle") {
 			_currentAction.OnCollision();
+		} else if (col.gameObject.tag == "Ground") {
+			MoveToInTime(rigidbody.position,0.0f);
 		}
 	}
 
