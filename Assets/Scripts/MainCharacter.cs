@@ -39,6 +39,7 @@ public class MainCharacter : Character {
 	protected override void Initialize ()
 	{
 		base.Initialize ();
+		_currentCell = startCell.cellNode;
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider).
