@@ -173,6 +173,11 @@ public class MainCharacter : MonoBehaviour {
 				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
 	        }
 		}
+
+		// A debug key input
+		if (Input.GetKeyUp(KeyCode.Q)) {
+			BadMoveAnimation();
+		}
 	}
 
 	private void CloseBeatWindow() {
@@ -186,6 +191,10 @@ public class MainCharacter : MonoBehaviour {
 		Invoke("CloseBeatWindow", BEAT_WINDOW);
         
     }
+	
+	private void BadMoveAnimation() {
+		iTween.ShakePosition(this.gameObject, new Vector3(0.3f, 0), 0.18f);
+	}
 
 	void OnCollisionEnter(Collision col) {
 		if (col.gameObject.tag == "Environment" && !isGrounded) {
