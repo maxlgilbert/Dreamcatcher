@@ -17,6 +17,10 @@ public class CellGridManager : MonoBehaviour {
 	public CellAction right;
 	public CellAction wait;
 
+	
+	public Material ground;
+	public Material obstacle;
+
 	private static CellGridManager instance;
 	
 	public static CellGridManager Instance

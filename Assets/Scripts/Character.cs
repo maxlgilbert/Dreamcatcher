@@ -39,7 +39,7 @@ public class Character : MonoBehaviour {
 			_currentCell = startCell.cellNode; // TODO
 		}
 		_currentCell = CellGridManager.Instance.GetCell(_currentCell.x+cellAction.directionX,_currentCell.y+cellAction.directionY).cellNode;
-		MoveToInTime(rigidbody.position+new Vector3(cellAction.directionX*4.8f,cellAction.directionY*3.6f,0.0f),.3f);
+		MoveToInTime(rigidbody.position+new Vector3(cellAction.directionX*3.0f,cellAction.directionY*3.0f,0.0f),.3f);
 	}
 	
 	public void MoveToInTime (Vector3 target, float duration){

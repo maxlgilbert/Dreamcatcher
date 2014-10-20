@@ -17,6 +17,11 @@ public class CellObject : MonoBehaviour {
 	void Start () {
 		cellNode = new CellNode(x,y);
 		CellGridManager.Instance.AddCell(this);
+		if (cellType == CellType.Ground || cellType == CellType.Empty) {
+			renderer.material = CellGridManager.Instance.ground;
+		} else {
+			renderer.material = CellGridManager.Instance.obstacle;
+		}
 	}
 	
 	// Update is called once per frame

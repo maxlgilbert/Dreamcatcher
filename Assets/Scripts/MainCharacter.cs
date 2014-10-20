@@ -81,8 +81,9 @@ public class MainCharacter : Character {
 		if (savedKey == "up") {
 			List<AStarNode> neighbors = CellGridManager.Instance.up.TryAction(_currentCell);
 			if (neighbors.Count > 0) {
-				_currentCell = neighbors[0] as CellNode;
-				MoveToInTime(rigidbody.position + new Vector3(0.0f,3.6f,0.0f),.3f);
+//				_currentCell = neighbors[0] as CellNode;
+//				MoveToInTime(rigidbody.position + new Vector3(0.0f,3,0.0f),.3f);
+				ExecuteCellAction(CellGridManager.Instance.up);
 				hasMovedOnBeat = true; //IN HERE????
 				Debug.Log("up");
 			} else {
@@ -91,8 +92,9 @@ public class MainCharacter : Character {
 		} else if (savedKey == "left") {
 			List<AStarNode> neighbors = CellGridManager.Instance.left.TryAction(_currentCell);
 			if (neighbors.Count > 0) {
-				_currentCell = neighbors[0] as CellNode;
-				MoveToInTime(rigidbody.position + new Vector3(-4.8f,0.0f,0.0f),.3f);
+//				_currentCell = neighbors[0] as CellNode;
+//				MoveToInTime(rigidbody.position + new Vector3(-3.0f,0.0f,0.0f),.3f);
+				ExecuteCellAction(CellGridManager.Instance.left);
 				hasMovedOnBeat = true;
 				Debug.Log("left");
 			} else {
@@ -101,8 +103,9 @@ public class MainCharacter : Character {
 		} else if (savedKey == "right") {
 			List<AStarNode> neighbors = CellGridManager.Instance.right.TryAction(_currentCell);
 			if (neighbors.Count > 0) {
-				_currentCell = neighbors[0] as CellNode;
-				MoveToInTime(rigidbody.position + new Vector3(4.8f,0.0f,0.0f),.3f);
+//				_currentCell = neighbors[0] as CellNode;
+//				MoveToInTime(rigidbody.position + new Vector3(3.0f,0.0f,0.0f),.3f);
+				ExecuteCellAction(CellGridManager.Instance.right);
 				hasMovedOnBeat = true;
 				Debug.Log("right");
 			} else {
@@ -127,8 +130,9 @@ public class MainCharacter : Character {
 					CancelInvoke("CloseSecondaryKeyWindow");
 					List<AStarNode> neighbors = CellGridManager.Instance.upLeft.TryAction(_currentCell);
 					if (neighbors.Count > 0) {
-						_currentCell = neighbors[0] as CellNode;
-						MoveToInTime(rigidbody.position + new Vector3(-4.8f,3.6f,0.0f),.3f);
+//						_currentCell = neighbors[0] as CellNode;
+//						MoveToInTime(rigidbody.position + new Vector3(-3.0f,3.0f,0.0f),.3f);
+						ExecuteCellAction(CellGridManager.Instance.upLeft);
 						hasMovedOnBeat = true;
 						Debug.Log("up left");
 					} else {
@@ -141,7 +145,9 @@ public class MainCharacter : Character {
 					CancelInvoke("CloseSecondaryKeyWindow");
 					List<AStarNode> neighbors = CellGridManager.Instance.upRight.TryAction(_currentCell);
 					if (neighbors.Count > 0) {
-						_currentCell = neighbors[0] as CellNode;MoveToInTime(rigidbody.position + new Vector3(4.8f,3.6f,0.0f),.3f);
+//						_currentCell = neighbors[0] as CellNode;
+//						MoveToInTime(rigidbody.position + new Vector3(3.0f,3.0f,0.0f),.3f);
+						ExecuteCellAction(CellGridManager.Instance.upRight);
 						hasMovedOnBeat = true;
 						Debug.Log("up right");
 					} else {
@@ -164,6 +170,9 @@ public class MainCharacter : Character {
 				savedKey = "right";
 				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
 	        }
+		}
+		if (!onBeat && ( Input.GetKey("left") || Input.GetKey("right") || Input.GetKey("up"))) {
+			BadMoveAnimation();
 		}
 
 		// A debug key input

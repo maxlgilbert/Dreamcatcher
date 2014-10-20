@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class AICharacter : Character {
-	public List<CellAction> _plan;
+	private List<CellAction> _plan;
 	private List<AStarNode> _nodePlan;
 	private int _step;
 	
@@ -20,6 +20,7 @@ public class AICharacter : Character {
 	}
 
 	void Start () {
+		this.gameObject.renderer.enabled = false;
 		Initialize();
 
 	}
