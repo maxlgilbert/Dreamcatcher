@@ -15,6 +15,7 @@ public class CellGridManager : MonoBehaviour {
 	public CellAction up;
 	public CellAction upRight;
 	public CellAction right;
+	public CellAction down;
 	public CellAction wait;
 
 	
@@ -42,12 +43,14 @@ public class CellGridManager : MonoBehaviour {
 		CellActions[1,2] = up;
 		CellActions[2,2] = upRight;
 		CellActions[2,1] = right;
+		CellActions[1,0] = down;
 		CellActions[1,1] = wait;
 		actions.Add(left);
 		actions.Add(upLeft);
 		actions.Add(up);
 		actions.Add(upRight);
 		actions.Add(right);
+		//actions.Add(down);
 		actions.Add(wait);
 		_allCellNodes = new CellObject[width,height];
 	}

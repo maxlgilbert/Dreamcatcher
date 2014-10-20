@@ -22,7 +22,11 @@ public class CellAction : AStarAction {
 		int y = currCellNode.y + directionY;
 		List<AStarNode> neighborList = new List<AStarNode>();
 		CellObject neighbor = CellGridManager.Instance.GetCell(x,y);
-		if (neighbor != null && neighbor.cellType != CellType.Obstacle) {
+		while (neighbor != null && neighbor.cellType == CellType.Empty) {
+			y--;
+			neighbor = CellGridManager.Instance.GetCell(x,y);
+		}
+		if (neighbor != null && neighbor.cellType == CellType.Ground) {
 			neighborList.Add(neighbor.cellNode);
 		}
 		return neighborList;
@@ -31,6 +35,9 @@ public class CellAction : AStarAction {
 	public static CellAction GetAction (CellNode from, CellNode to) {
 		int dirX = to.x - from.x+1;
 		int dirY = to.y - from.y+1;
+		if (dirY<1) {
+			dirY = 1;
+		}
 		return CellGridManager.Instance.CellActions[dirX,dirY];
 	}
 }

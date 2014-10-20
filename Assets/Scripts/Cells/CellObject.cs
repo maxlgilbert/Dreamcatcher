@@ -9,6 +9,7 @@ public class CellObject : MonoBehaviour {
 	public int x;
 	public int y;
 	public CellNode cellNode;
+	public CellObject returnCell;
 
 	public CellType cellType;
 	void Awake () {

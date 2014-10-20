@@ -71,14 +71,20 @@ public class Character : MonoBehaviour {
 		yield return new WaitForSeconds(duration);
 		// PERFORM CELL BEHAVIOR
 		// If ground
-		if (_currentCell.cellType == CellType.Empty || _currentCell.cellType == CellType.Ground) {
+		if (_currentCell.cellType == CellType.Ground) {
 			rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
 			rigidbody.MovePosition(target);
 		} else if (_currentCell.cellType == CellType.Obstacle) {
 			CellObject tempCell = _currentCell;
-			_currentCell = _previousCell;
+			if (_currentCell.returnCell != null) {
+				_currentCell = _currentCell.returnCell;
+			} else {
+				_currentCell = _previousCell;
+			}
 			_previousCell = tempCell;
 			MoveToInTime(originalLocation,duration); //TODO initiate on trigger not just at end?
+		} else {
+			ExecuteCellAction(CellGridManager.Instance.down);
 		}
 		// If obstacle
 		// If empty
