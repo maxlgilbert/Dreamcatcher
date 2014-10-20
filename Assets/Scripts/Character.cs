@@ -4,23 +4,26 @@ using System.Collections;
 public class Character : MonoBehaviour {
 	
 	
-	float horizontalGroundSpeed;
-	float horizontalAirSpeed; // either we adjust friction, or just tune air vs. ground speed. Playing w/ friction may cause slip/slide issues
-	float verticalSpeed;
+	protected float horizontalGroundSpeed;
+	protected float horizontalAirSpeed; // either we adjust friction, or just tune air vs. ground speed. Playing w/ friction may cause slip/slide issues
+	protected float verticalSpeed;
 	protected Action _currentAction;
 	
 	public CellObject startCell;
 	
 	protected CellNode _currentCell;
 	// Use this for initialization
-	void Start () {
+	protected virtual void Initialize () {
 		BeatManager.Instance.Beat += BeatHandler;
 		
 		horizontalGroundSpeed = 16.0f; // 4:1 ratio seems solid
 		horizontalAirSpeed = 4.0f;
 		verticalSpeed = 12.0f;
 		
-		//_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
+		_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
+		if (startCell.cellNode == null) {
+			Debug.LogError("hmmmm");
+		}
 		_currentCell = startCell.cellNode;
 	}
 	
@@ -32,6 +35,17 @@ public class Character : MonoBehaviour {
 	protected virtual void BeatHandler(BeatManager beatManager) {
 		Debug.Log("Beat!");
 		
+	}
+
+	public void ExecuteCellAction (CellAction cellAction) {
+		if (cellAction == null) {
+			Debug.LogError("wtf1");
+		}
+		if (_currentCell == null) {
+			Debug.LogError("wtf2");
+		}
+		_currentCell = CellGridManager.Instance.GetCell(_currentCell.x+cellAction.directionX,_currentCell.y+cellAction.directionY).cellNode;
+		MoveToInTime(rigidbody.position+new Vector3(cellAction.directionX*4.8f,cellAction.directionY*3.6f,0.0f),.3f);
 	}
 	
 	public void MoveToInTime (Vector3 target, float duration){

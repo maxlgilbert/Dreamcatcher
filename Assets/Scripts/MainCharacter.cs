@@ -2,15 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class MainCharacter : MonoBehaviour {
+public class MainCharacter : Character {
 	// Constants
 	const float PADDING = 0.05f;
 	const float BEAT_WINDOW = 1.0f;
 	const float SECONDARY_KEY_WINDOW = 0.05f;
-
-	float horizontalGroundSpeed;
-	float horizontalAirSpeed; // either we adjust friction, or just tune air vs. ground speed. Playing w/ friction may cause slip/slide issues
-	float verticalSpeed;
 	bool isGrounded;
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
 	bool onBeat; // The beat window is open for BEAT_WINDOW seconds when this is true
@@ -20,21 +16,11 @@ public class MainCharacter : MonoBehaviour {
 	bool waitingForSecondaryKey;
 
 	private Camera _mainCamera;
-	private Action _currentAction;
-
-	public CellObject startCell;
-
-	private CellNode _currentCell;
 
 	void Start() {
 		// TODO: put this in a game manager
 		Physics.gravity = new Vector3(0, -30.0f, 0);
 
-		BeatManager.Instance.Beat += BeatHandler;
-
-		horizontalGroundSpeed = 16.0f; // 4:1 ratio seems solid
-		horizontalAirSpeed = 4.0f;
-		verticalSpeed = 12.0f;
 		isGrounded = true;
 		isCollidingWithWall = false;
 		onBeat = false;
@@ -45,9 +31,14 @@ public class MainCharacter : MonoBehaviour {
 
 		this.gameObject.renderer.enabled = false;
 		_mainCamera = Camera.main;
-		_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
-		_currentCell = startCell.cellNode;
 
+		Initialize();
+
+	}
+
+	protected override void Initialize ()
+	{
+		base.Initialize ();
 	}
 
 	// Do raycasts down to see if isGrounded should evaluate to true or not (left, middle, right of collider).
@@ -185,7 +176,7 @@ public class MainCharacter : MonoBehaviour {
 		hasMovedOnBeat = false;
 	}
 		
-	private void BeatHandler(BeatManager beatManager) {
+	protected override void BeatHandler(BeatManager beatManager) {
 		Debug.Log("Daisy heard the beat!");
 		onBeat = true;
 		Invoke("CloseBeatWindow", BEAT_WINDOW);
@@ -220,24 +211,5 @@ public class MainCharacter : MonoBehaviour {
 		_mainCamera.transform.position = new Vector3(gameObject.transform.position.x,
 		                                             _mainCamera.transform.position.y,
 		                                             _mainCamera.transform.position.z);
-	}
-
-	public void MoveToInTime (Vector3 target, float duration){
-		StopCoroutine("MoveToInTimeCoroutine");
-		_currentAction.returnPt = rigidbody.position;
-		_currentAction.endPt = target;
-		_currentAction.duration = duration;
-		StartCoroutine(MoveToInTimeCoroutine(target,duration));
-	}
-
-	IEnumerator MoveToInTimeCoroutine(Vector3 target, float duration){
-		float horizontalVelocity = 0.0f;
-		float verticalVelocity = 0.0f;
-		horizontalVelocity = (target.x - rigidbody.position.x)/duration;
-		verticalVelocity = (target.y - rigidbody.position.y)/duration;
-		rigidbody.velocity = new Vector3(horizontalVelocity, verticalVelocity, rigidbody.velocity.z);
-		yield return new WaitForSeconds(duration);
-		rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
-		rigidbody.MovePosition(target);
 	}
 }
