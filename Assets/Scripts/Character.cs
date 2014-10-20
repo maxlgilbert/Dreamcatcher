@@ -20,7 +20,7 @@ public class Character : MonoBehaviour {
 		horizontalAirSpeed = 4.0f;
 		verticalSpeed = 12.0f;
 		
-		_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
+		//_currentAction = new Action(new Vector3(), new Vector3(), 0.0f,this);
 		_currentCell = startCell.cellNode;
 	}
 	
