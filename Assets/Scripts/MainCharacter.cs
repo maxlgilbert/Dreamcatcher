@@ -21,6 +21,8 @@ public class MainCharacter : MonoBehaviour {
 	private Camera _mainCamera;
 	private Action _currentAction;
 
+	public CellObject startCell;
+
 	void Start() {
 		// TODO: put this in a game manager
 		Physics.gravity = new Vector3(0, -30.0f, 0);
