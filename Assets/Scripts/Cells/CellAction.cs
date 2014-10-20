@@ -20,9 +20,9 @@ public class CellAction : AStarAction {
 		int x = currCellNode.x + directionX;
 		int y = currCellNode.y + directionY;
 		List<AStarNode> neighborList = new List<AStarNode>();
-		CellNode neighbor = CellGridManager.Instance.GetCell(x,y);
-		if (neighbor != null) {
-			neighborList.Add(neighbor);
+		CellObject neighbor = CellGridManager.Instance.GetCell(x,y);
+		if (neighbor != null && neighbor.cellType != CellType.Obstacle) {
+			neighborList.Add(neighbor.cellNode);
 		}
 		return neighborList;
 	} 
