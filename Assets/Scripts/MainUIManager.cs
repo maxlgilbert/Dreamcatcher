@@ -6,6 +6,7 @@ public class MainUIManager : MonoBehaviour {
 	const int BUTTON_HEIGHT = 40;
 	const float START_X = -20f; // arbitrary right now
 	const float END_X = 100f; // arbitrary right now
+	const float BEAT_INDICATOR_MAX_SCALE = 0.02f;
 
 	private bool paused;
 //	private Texture2D overlay;
@@ -18,9 +19,11 @@ public class MainUIManager : MonoBehaviour {
 	public GameObject daisy;
 	public GUIText timeElapsed;
 	public GUIText distanceAway;
+	public GUITexture beatIndicator;
 	public GameObject overlayPlane;
 
 	void Start() {
+		BeatManager.Instance.Beat += BeatHandler;
 		Restart();
 //		SetOverlayTexture();
 	}
@@ -103,7 +106,18 @@ public class MainUIManager : MonoBehaviour {
 //		GUI.DrawTexture(new Rect(0, 0, overlay.width, overlay.height), overlay);
 //	}
 
-	void OnGUI() {
+	private void PulseBeatIndicator() {
+		int additionalScale = 20;
+		Rect oldPix = beatIndicator.pixelInset;
+		Rect newPix = new Rect(oldPix.x - additionalScale/2, oldPix.y - additionalScale/2, oldPix.width + additionalScale, oldPix.height + additionalScale);
+		beatIndicator.pixelInset = newPix;
+	}
+
+	private void BeatHandler(BeatManager beatManager) {
+		PulseBeatIndicator();
+    }
+    
+    void OnGUI() {
 //		DrawOverlay();
 		if (paused) {
 			DrawPauseMenu();
@@ -119,6 +133,11 @@ public class MainUIManager : MonoBehaviour {
 		if (Input.GetKeyUp(KeyCode.P)) {
 			paused = !paused;
 			Time.timeScale = (paused) ? 0 : 1;
+		}
+
+		if (beatIndicator.pixelInset.width > 40) {
+			Rect old = beatIndicator.pixelInset;
+			beatIndicator.pixelInset = new Rect(old.x + 1, old.y + 1, old.width - 2, old.height - 2);
 		}
 	}
 }
