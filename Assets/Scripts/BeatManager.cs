@@ -5,6 +5,9 @@ public class BeatManager : MonoBehaviour {
 	public float gravity = -9.81f;
 
 	public AudioClip beatSound;
+	public int beatNumber = -1;
+
+	public int totalBeats = 100;
 
 	private static BeatManager instance;
 	
@@ -43,6 +46,7 @@ public class BeatManager : MonoBehaviour {
 		while(true) {
 			yield return new WaitForSeconds(2.0f);
 			OnBeat();
+			beatNumber++;
 		}
 	}
 

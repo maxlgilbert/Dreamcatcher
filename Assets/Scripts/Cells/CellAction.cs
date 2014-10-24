@@ -17,17 +17,30 @@ public class CellAction : AStarAction {
 	}
 	public override List<AStarNode> TryAction (AStarNode curr)
 	{
+
 		CellNode currCellNode = curr as CellNode;
 		int x = currCellNode.x + directionX;
 		int y = currCellNode.y + directionY;
 		List<AStarNode> neighborList = new List<AStarNode>();
-		CellObject neighbor = CellGridManager.Instance.GetCell(x,y);
-		while (neighbor != null && neighbor.cellType == CellType.Empty) {
-			y--;
-			neighbor = CellGridManager.Instance.GetCell(x,y);
+		CellObject neighborObject = CellGridManager.Instance.GetCell(x,y);
+		CellNode neighborNode;
+		if (neighborObject != null) {
+			neighborNode = new CellNode(x,y);
+			neighborNode.beat = currCellNode.beat+1;
+		} else {
+			return neighborList;
 		}
-		if (neighbor != null && neighbor.cellType == CellType.Ground) {
-			neighborList.Add(neighbor.cellNode);
+		while (neighborObject != null && CellGridManager.Instance.GetCellTypeAtBeat(neighborNode) == CellType.Empty) {
+			y--;
+			neighborObject = CellGridManager.Instance.GetCell(x,y);
+			neighborNode = new CellNode(x,y);
+			neighborNode.beat = currCellNode.beat+1;
+		}
+		if (neighborObject != null && CellGridManager.Instance.GetCellTypeAtBeat(neighborNode) == CellType.Ground) {
+			//neighborList.Add(neighbor.cellNode);
+			//CellNode newNeighbor = new CellNode(neighbor.x,neighbor.y);
+			//newNeighbor.beat = currCellNode.beat+1;
+			neighborList.Add(neighborNode);
 		}
 		return neighborList;
 	} 

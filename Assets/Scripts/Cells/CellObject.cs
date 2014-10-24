@@ -10,9 +10,11 @@ public class CellObject : MonoBehaviour {
 	public int y;
 	public CellNode cellNode;
 	public CellObject returnCell;
+	public Vector2 location;
 
 	public CellType cellType;
 	void Awake () {
+		location = new Vector2(gameObject.transform.position.x,gameObject.transform.position.y);
 	}
 	// Use this for initialization
 	void Start () {
@@ -25,6 +27,7 @@ public class CellObject : MonoBehaviour {
 		} else {
 			renderer.material = CellGridManager.Instance.empty;
 		}
+		renderer.enabled = false;
 	}
 	
 	// Update is called once per frame

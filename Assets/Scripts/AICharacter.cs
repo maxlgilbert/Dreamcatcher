@@ -35,16 +35,19 @@ public class AICharacter : Character {
 	}
 
 	protected override void BeatHandler(BeatManager beatManager) {
-		if (_step == -1) {
-			_nodePlan = _aStar.FindPath(startCell.cellNode,goalCell.cellNode);
-			for (int i = 0; i < _nodePlan.Count-1; i++) {
-				_plan.Add(CellAction.GetAction(_nodePlan[i] as CellNode,_nodePlan[i+1] as CellNode));
+		if (BeatManager.Instance.beatNumber > -1) {
+			if (_step == -1) {
+				_nodePlan = _aStar.FindPath(startCell.cellNode,goalCell.cellNode);
+				for (int i = 0; i < _nodePlan.Count-1; i++) {
+					_plan.Add(CellAction.GetAction(_nodePlan[i] as CellNode,_nodePlan[i+1] as CellNode));
+				}
+				_step++;
 			}
-			_step++;
-		}
-		if (_step < _plan.Count){
-			ExecuteCellAction(_plan[_step]);
-			_step++;
+			if (_step < _plan.Count){
+				ExecuteCellAction(_plan[_step]);
+				Debug.LogError(_plan[_step].gameObject.name);
+				_step++;
+			}
 		}
 	}
 }

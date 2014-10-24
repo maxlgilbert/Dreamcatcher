@@ -8,6 +8,7 @@ public class CellGridManager : MonoBehaviour {
 	public int width;
 	public int height;
 	private CellObject[,] _allCellNodes;
+	public Dictionary<Vector2,Dictionary<int,CellType>> timeMapNodes;
 	[HideInInspector] public CellAction[,] CellActions;
 	[HideInInspector] public List<AStarAction> actions;
 	public CellAction left;
@@ -53,6 +54,7 @@ public class CellGridManager : MonoBehaviour {
 		//actions.Add(down);
 		actions.Add(wait);
 		_allCellNodes = new CellObject[width,height];
+		timeMapNodes = new Dictionary<Vector2, Dictionary<int, CellType>>();
 	}
 
 	// Use this for initialization
@@ -70,8 +72,30 @@ public class CellGridManager : MonoBehaviour {
 		int y = cellObject.cellNode.y;
 		if (x < width && y < height) {
 			_allCellNodes[x,y] = cellObject;
+			timeMapNodes[new Vector2(x,y)] = new Dictionary<int, CellType>();
+			for (int i =0; i <BeatManager.Instance.totalBeats; i++) {
+				timeMapNodes[new Vector2(x,y)][i] = CellType.Empty;
+			}
 		} else {
 			Debug.LogError("Tried adding out of bounds cell!");
+		}
+	}
+
+	public CellType GetCellTypeAtBeat(CellNode node){
+		if (node.beat < BeatManager.Instance.totalBeats) {
+			return timeMapNodes[new Vector2(node.x,node.y)][node.beat];
+		} else {
+			Debug.LogError("Not that many beats in the level!");
+			return CellType.Empty;
+		}
+	}
+
+	
+	public void SetCellTypeAtBeat(int x, int y, int beat, CellType cellType){
+		if (beat < BeatManager.Instance.totalBeats) {
+			timeMapNodes[new Vector2(x,y)][beat] = cellType;
+		} else {
+			Debug.LogError("Not that many beats in the level!");
 		}
 	}
 

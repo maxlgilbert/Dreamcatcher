@@ -57,7 +57,7 @@ public class AStar {
 							visited = true;
 						}
 					}
-					if (!visited) {
+					//if (!visited) { TODO is this okay?
 						// Get projected actual distance travelled and estimated distance to goal.
 						float gValue = curr.distanceTraveled + curr.distance(neighbor);
 						float hValue = neighbor.estimate(goal);
@@ -73,7 +73,7 @@ public class AStar {
 								closestNode = neighbor;
 							}
 						}
-					}
+					//}
 				}
 			}
 			// Get the node with lowest fValue (best guess).

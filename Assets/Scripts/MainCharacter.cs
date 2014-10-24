@@ -168,7 +168,7 @@ public class MainCharacter : Character {
 	}
 		
 	protected override void BeatHandler(BeatManager beatManager) {
-		Debug.Log("Daisy heard the beat!");
+		//Debug.Log("Daisy heard the beat!");
 		onBeat = true;
 		Invoke("CloseBeatWindow", BEAT_WINDOW);
         

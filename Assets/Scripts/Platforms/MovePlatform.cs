@@ -4,7 +4,6 @@ using System.Collections;
 public class MovePlatform : BeatPlatform {
 	public float timeOfMovement = 1.0f;
 	public float initialvelocity = 10.0f;
-	private float acceleration = 0.0f;
 	private Vector3 initialPosition;
 
 	void Awake () {
