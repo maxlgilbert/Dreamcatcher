@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MainCharacter : Character {
 	// Constants
 	const float PADDING = 0.05f;
-	const float BEAT_WINDOW = 1.0f;
+	private float BEAT_WINDOW;
 	const float SECONDARY_KEY_WINDOW = 0.05f;
 	bool isGrounded;
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
@@ -31,7 +31,7 @@ public class MainCharacter : Character {
 
 		this.gameObject.renderer.enabled = false;
 		_mainCamera = Camera.main;
-
+		BEAT_WINDOW = .6f * BeatManager.Instance.beatLength;
 		Initialize();
 
 	}
@@ -85,7 +85,7 @@ public class MainCharacter : Character {
 //				MoveToInTime(rigidbody.position + new Vector3(0.0f,3,0.0f),.3f);
 				ExecuteCellAction(CellGridManager.Instance.up);
 				hasMovedOnBeat = true; //IN HERE????
-				Debug.Log("up");
+				//Debug.Log("up");
 		} else if (savedKey == "left") {
 			//List<AStarNode> neighbors = CellGridManager.Instance.left.TryAction(_currentCell);
 			//if (neighbors.Count > 0) {
@@ -93,7 +93,7 @@ public class MainCharacter : Character {
 //				MoveToInTime(rigidbody.position + new Vector3(-3.0f,0.0f,0.0f),.3f);
 				ExecuteCellAction(CellGridManager.Instance.left);
 				hasMovedOnBeat = true;
-				Debug.Log("left");
+				//Debug.Log("left");
 		} else if (savedKey == "right") {
 			//List<AStarNode> neighbors = CellGridManager.Instance.right.TryAction(_currentCell);
 			//if (neighbors.Count > 0) {
@@ -101,7 +101,7 @@ public class MainCharacter : Character {
 //				MoveToInTime(rigidbody.position + new Vector3(3.0f,0.0f,0.0f),.3f);
 				ExecuteCellAction(CellGridManager.Instance.right);
 				hasMovedOnBeat = true;
-				Debug.Log("right");
+				//Debug.Log("right");
 		}
 
 		savedKey = "";

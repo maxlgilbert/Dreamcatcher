@@ -35,7 +35,7 @@ public class AICharacter : Character {
 	}
 
 	protected override void BeatHandler(BeatManager beatManager) {
-		if (BeatManager.Instance.beatNumber > -1) {
+		if (beatManager.beatNumber > -1) {
 			if (_step == -1) {
 				_nodePlan = _aStar.FindPath(startCell.cellNode,goalCell.cellNode);
 				for (int i = 0; i < _nodePlan.Count-1; i++) {
@@ -45,7 +45,7 @@ public class AICharacter : Character {
 			}
 			if (_step < _plan.Count){
 				ExecuteCellAction(_plan[_step]);
-				Debug.LogError(_plan[_step].gameObject.name);
+				//Debug.LogError(_plan[_step].gameObject.name);
 				_step++;
 			}
 		}

@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MovingPlatform : Platform {
-	public float timeOfMovement = .5f;
+	public float percentOfBeat = .5f;
+	private float _timeOfMovement;
 	private Vector2 _velocity = new Vector2();
 	private Vector3 initialPosition;
 	public List<Vector2> pathActions = new List<Vector2>();
@@ -16,6 +17,7 @@ public class MovingPlatform : Platform {
 	}
 
 	protected override void Initialize () {
+		_timeOfMovement = BeatManager.Instance.beatLength*percentOfBeat;
 		_pathNodes = new List<CellObject>();
 		_pathNodes.Add(currentCell);
 
@@ -50,7 +52,7 @@ public class MovingPlatform : Platform {
 			_totalMoves = _pathNodes.Count;
 			currentCell = _pathNodes[0];
 			SetCellTypes();
-		} else {
+		} else if (BeatManager.Instance.beatNumber >= 0){
 			StartCoroutine("Move");
 		}
 	}
@@ -71,9 +73,9 @@ public class MovingPlatform : Platform {
 		Vector2 previousLocation = currentCell.location;
 		currentCell = _pathNodes[_currentMove];
 		currentCell.cellType = this.cellType;
-		_velocity = (currentCell.location - previousLocation)/timeOfMovement;
+		_velocity = (currentCell.location - previousLocation)/_timeOfMovement;
 		gameObject.rigidbody.velocity = new Vector3(_velocity.x,_velocity.y,0);
-		yield return new WaitForSeconds(timeOfMovement);
+		yield return new WaitForSeconds(_timeOfMovement);
 		gameObject.rigidbody.velocity = new Vector3(0,0,0);
 		//gameObject.rigidbody.MovePosition(initialPosition);
 	}
