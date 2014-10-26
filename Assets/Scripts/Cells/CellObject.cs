@@ -11,6 +11,7 @@ public class CellObject : MonoBehaviour {
 	public CellNode cellNode;
 	public CellObject returnCell;
 	public Vector2 location;
+	public bool transitionCell;
 
 	public CellType cellType;
 	void Awake () {

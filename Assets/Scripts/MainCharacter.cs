@@ -16,6 +16,19 @@ public class MainCharacter : Character {
 	bool waitingForSecondaryKey;
 
 	private Camera _mainCamera;
+	
+	private static MainCharacter instance;
+	
+	public static MainCharacter Instance
+	{
+		get 
+		{
+			return instance;
+		}
+	}
+	void Awake() {
+		instance = this;
+	}
 
 	void Start() {
 		// TODO: put this in a game manager
@@ -33,6 +46,7 @@ public class MainCharacter : Character {
 		_mainCamera = Camera.main;
 		BEAT_WINDOW = .6f * BeatManager.Instance.beatLength;
 		Initialize();
+		BeatManager.Instance.BeatWindowChanged+=BeatWindowChangedHandler;
 
 	}
 
@@ -123,7 +137,7 @@ public class MainCharacter : Character {
 //						MoveToInTime(rigidbody.position + new Vector3(-3.0f,3.0f,0.0f),.3f);
 						ExecuteCellAction(CellGridManager.Instance.upLeft);
 						hasMovedOnBeat = true;
-						Debug.Log("up left");
+						//Debug.Log("up left");
 				}
 				// If found right+up combo, close window and cancelInvoke. Then set velocity to up right
 				else if ((Input.GetKey("right")  && savedKey == "up") || (Input.GetKey("up") && savedKey == "right")) {
@@ -133,7 +147,7 @@ public class MainCharacter : Character {
 //						MoveToInTime(rigidbody.position + new Vector3(3.0f,3.0f,0.0f),.3f);
 						ExecuteCellAction(CellGridManager.Instance.upRight);
 						hasMovedOnBeat = true;
-						Debug.Log("up right");
+						//Debug.Log("up right");
 				}
 
 			} else if (Input.GetKey("up")){// && isGrounded) {
@@ -163,19 +177,38 @@ public class MainCharacter : Character {
 	}
 
 	private void CloseBeatWindow() {
-		onBeat = false;
-		hasMovedOnBeat = false;
+		//onBeat = false;
+		//hasMovedOnBeat = false;
+	}
+
+	
+	public void BeatWindowChangedHandler(BeatManager beatManager) {
+		//Debug.Log("Daisy heard the beat!");
+		//onBeat = true;
+		//Invoke("CloseBeatWindow", BEAT_WINDOW);
+		//Debug.LogError("badooommmy");
+		if (beatManager.windowOpen) {
+			onBeat = true;
+		} else {
+			onBeat = false;
+			hasMovedOnBeat = false;
+		}
+		
 	}
 		
 	protected override void BeatHandler(BeatManager beatManager) {
 		//Debug.Log("Daisy heard the beat!");
 		onBeat = true;
-		Invoke("CloseBeatWindow", BEAT_WINDOW);
+		//Invoke("CloseBeatWindow", BEAT_WINDOW);
         
     }
 	
 	private void BadMoveAnimation() {
 		iTween.ShakePosition(this.gameObject, new Vector3(0.3f, 0), 0.18f);
+	}
+
+	public CellObject GetCurrentCell () {
+		return _currentCell;
 	}
 
 	void OnCollisionEnter(Collision col) {
