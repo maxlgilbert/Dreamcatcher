@@ -94,20 +94,21 @@ public class BeatManager : MonoBehaviour {
 	void Update () {
 		float passedTime = Time.time - lastBeat;
 
-		if(Time.time - _timeToTwoSeconds >=2.0f) {
-			_timeToTwoSeconds = Time.time;
-			//Debug.LogError("2!!");
+		if(Time.time - _timeToTwoSeconds >=1.98f) {
 			if(LevelManager.Instance.readyToSwitchUnits) {
 				LevelManager.Instance.SwitchUnits(beatNumber);
-				_elapsedBeatTime += beatLength;
-				lastBeat = startingTime + _elapsedBeatTime;
+				//_elapsedBeatTime += beatLength;
+				//lastBeat = startingTime + _elapsedBeatTime;
+				_elapsedBeatTime = Time.time - startingTime;
+				lastBeat = Time.time;
 				//Debug.LogError(lastBeat);
 				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
 				OnBeat();
 				beatNumber++;
 			}
-		}
-		if (passedTime >= beatLength) {
+			_timeToTwoSeconds = Time.time + (2.0f - (Time.time - _timeToTwoSeconds));
+			//Debug.LogError("2!!");
+		} else if (passedTime >= beatLength) {
 			if (beatNumber > 0) {
 				_elapsedBeatTime += beatLength;
 				lastBeat = startingTime + _elapsedBeatTime;

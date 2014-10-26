@@ -17,6 +17,7 @@ public class AICharacter : Character {
 		_plan = new List<CellAction>();
 		_step = -1;
 		_aStar = new AStar(_maxDepth);
+		_iAmRobot = true;
 	}
 
 	void Start () {
