@@ -51,6 +51,7 @@ public class LevelManager : MonoBehaviour {
 					playUnitClip(_currentPuzzleUnit);
 					return puzzleUnits[_currentPuzzleUnit].getNextBeatLength(beat);
 				} else {
+					puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
 					BeatManager.Instance.LoopBeatTo(curr.startingBeatNumber);
 					playUnitClip(_currentPuzzleUnit);
 					return curr.getNextBeatLength(beat);
