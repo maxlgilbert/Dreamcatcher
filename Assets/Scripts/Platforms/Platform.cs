@@ -4,16 +4,29 @@ using System.Collections;
 public class Platform : MonoBehaviour {
 
 	[HideInInspector] public CellObject currentCell;
+	
+	public CellObject returnCell;
 
 	public CellType cellType;
 	// Use this for initialization
 	void Start () {
 		BeatManager.Instance.Beat += BeatHandler;
 		currentCell = gameObject.GetComponentInParent<CellObject>() as CellObject;
+		if (currentCell == null) {
+			currentCell = gameObject.GetComponent<CellObject>() as CellObject;
+		}
 		if (currentCell != null) {
 			currentCell.cellType = cellType;
+			currentCell.returnCell = this.returnCell;
 		} else {
 			Debug.LogError("No parent cell specified!");
+		}
+		if (currentCell.transitionCell) {
+			renderer.material = CellGridManager.Instance.ground;
+		} else if (cellType == CellType.Obstacle){
+			renderer.material = CellGridManager.Instance.obstacle;
+		} else {
+			renderer.material = CellGridManager.Instance.empty;
 		}
 		Initialize();
 	}

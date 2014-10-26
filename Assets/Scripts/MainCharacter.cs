@@ -167,7 +167,7 @@ public class MainCharacter : Character {
 	        }
 		}
 		if (!onBeat && ( Input.GetKey("left") || Input.GetKey("right") || Input.GetKey("up"))) {
-			BadMoveAnimation();
+			//BadMoveAnimation();
 		}
 
 		// A debug key input
@@ -232,8 +232,5 @@ public class MainCharacter : Character {
 	void Update() {
 		CheckGroundedness();
 		CheckInput();
-		_mainCamera.transform.position = new Vector3(gameObject.transform.position.x,
-		                                             _mainCamera.transform.position.y,
-		                                             _mainCamera.transform.position.z);
 	}
 }

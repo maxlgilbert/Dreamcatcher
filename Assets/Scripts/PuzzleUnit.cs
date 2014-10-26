@@ -13,7 +13,7 @@ public class PuzzleUnit : MonoBehaviour {
 	public int beatPatternLength;
 
 	// Duration
-	[HideInInspector] public float duration;
+	public float duration;
 
 	// Checkpoints?
 	public int startingBeatNumber=0;

@@ -71,6 +71,9 @@ public class Character : MonoBehaviour {
 		yield return new WaitForSeconds(duration);
 		// PERFORM CELL BEHAVIOR
 		// If ground
+		if (_currentCell.transitionCell) {
+			LevelManager.Instance.readyToSwitchUnits = true;;
+		}
 		if (_currentCell.cellType == CellType.Ground) {
 			rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
 			rigidbody.MovePosition(target);
@@ -82,7 +85,7 @@ public class Character : MonoBehaviour {
 				_currentCell = _previousCell;
 			}
 			_previousCell = tempCell;
-			MoveToInTime(originalLocation,duration); //TODO initiate on trigger not just at end?
+			MoveToInTime(_currentCell.gameObject.transform.position,duration); //TODO initiate on trigger not just at end?
 		} else {
 			ExecuteCellAction(CellGridManager.Instance.down);
 		}

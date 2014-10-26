@@ -9,19 +9,20 @@ public class CellObject : MonoBehaviour {
 	public int x;
 	public int y;
 	public CellNode cellNode;
-	public CellObject returnCell;
+	[HideInInspector] public CellObject returnCell;
 	public Vector2 location;
 	public bool transitionCell;
 
-	public CellType cellType;
+	[HideInInspector] public CellType cellType;
 	void Awake () {
 		location = new Vector2(gameObject.transform.position.x,gameObject.transform.position.y);
+
 	}
 	// Use this for initialization
 	void Start () {
 		cellNode = new CellNode(x,y);
 		CellGridManager.Instance.AddCell(this);
-		if (cellType == CellType.Ground) {
+		if (cellType == CellType.Ground || transitionCell) {
 			renderer.material = CellGridManager.Instance.ground;
 		} else if (cellType == CellType.Obstacle){
 			renderer.material = CellGridManager.Instance.obstacle;

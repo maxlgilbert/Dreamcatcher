@@ -12,6 +12,8 @@ public class BeatManager : MonoBehaviour {
 	public int beatNumber = -4;
 	//private AudioSource _audioSource;
 	public float beatLength = .5f;
+	private float _elapsedBeatTime = 0.0f;
+	private float _timeToTwoSeconds = 100.0f;
 	public float beatWindowPercent = .6f;
 	private float beatWindow;
 	public bool windowOpen;
@@ -47,7 +49,7 @@ public class BeatManager : MonoBehaviour {
 
 	public void OnBeat() {
 		if (Beat!=null) {
-			//AudioSource.PlayClipAtPoint(beatSound,listener.transform.position);
+			AudioSource.PlayClipAtPoint(beatSound,listener.transform.position);
 			//Debug.LogError(beatNumber);
 			Beat(this);
 		}
@@ -91,16 +93,32 @@ public class BeatManager : MonoBehaviour {
 
 	void Update () {
 		float passedTime = Time.time - lastBeat;
+
+		if(Time.time - _timeToTwoSeconds >=2.0f) {
+			_timeToTwoSeconds = Time.time;
+			//Debug.LogError("2!!");
+			if(LevelManager.Instance.readyToSwitchUnits) {
+				LevelManager.Instance.SwitchUnits(beatNumber);
+				_elapsedBeatTime += beatLength;
+				lastBeat = startingTime + _elapsedBeatTime;
+				//Debug.LogError(lastBeat);
+				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
+				OnBeat();
+				beatNumber++;
+			}
+		}
 		if (passedTime >= beatLength) {
 			if (beatNumber > 0) {
-				lastBeat = startingTime + (float)beatNumber * beatLength;
-				Debug.LogError(lastBeat);
+				_elapsedBeatTime += beatLength;
+				lastBeat = startingTime + _elapsedBeatTime;
+				//Debug.LogError(lastBeat);
 				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
 			}
 			if (beatNumber == 0) {
 				LevelManager.Instance.playUnitClip(0);
 				lastBeat = Time.time;
 				startingTime = Time.time;
+				_timeToTwoSeconds = Time.time;
 				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
 			}
 			OnBeat();

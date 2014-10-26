@@ -12,6 +12,8 @@ public class LevelManager : MonoBehaviour {
 	private AudioSource _audioSource;
 	
 	private static LevelManager instance;
+
+	public bool readyToSwitchUnits = false;
 	
 	public static LevelManager Instance
 	{
@@ -44,24 +46,32 @@ public class LevelManager : MonoBehaviour {
 			return curr.getNextBeatLength(beat);
 		} else { 
 			if(_currentPuzzleUnit < puzzleUnits.Count) {
-				if (MainCharacter.Instance.GetCurrentCell().transitionCell){
-					MainCharacter.Instance.GetCurrentCell().transitionCell = false; //TODO make it smarter!
-					_currentPuzzleUnit += 1;
-					puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
-					playUnitClip(_currentPuzzleUnit);
+				/*if (MainCharacter.Instance.GetCurrentCell().transitionCell){
+					SwitchUnits(beat);
 					return puzzleUnits[_currentPuzzleUnit].getNextBeatLength(beat);
-				} else {
+				} else {*/
 					puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
 					BeatManager.Instance.LoopBeatTo(curr.startingBeatNumber);
 					playUnitClip(_currentPuzzleUnit);
 					return curr.getNextBeatLength(beat);
-				}
+				//}
 			} else {
 				Debug.LogError("You won I think!");
 				return -1.0f;
 			}
 		}
 	}
+
+	public void SwitchUnits (int beat) {
+		readyToSwitchUnits = false;
+		MainCharacter.Instance.GetCurrentCell().transitionCell = false; //TODO make it smarter!
+		_currentPuzzleUnit += 1;
+		puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
+		playUnitClip(_currentPuzzleUnit);
+		iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",MainCharacter.Instance.gameObject.transform.position.x,"time",1.0));
+	}
+
+
 
 	public void playUnitClip (int unit) {
 		_audioSource.Stop();
