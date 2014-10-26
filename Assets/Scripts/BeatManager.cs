@@ -82,7 +82,7 @@ public class BeatManager : MonoBehaviour {
 	}
 
 	public void LoopBeatTo (int newBeatNumber) {
-		beatNumber = newBeatNumber;
+		//beatNumber = newBeatNumber;
 		/*_audioSource.Stop();
 		_audioSource.clip = levelMusic[_currentLevelMusic];
 		_audioSource.Play();*/
@@ -94,6 +94,7 @@ public class BeatManager : MonoBehaviour {
 		if (passedTime >= beatLength) {
 			if (beatNumber > 0) {
 				lastBeat = startingTime + (float)beatNumber * beatLength;
+				Debug.LogError(lastBeat);
 				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
 			}
 			if (beatNumber == 0) {
