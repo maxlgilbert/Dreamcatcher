@@ -20,10 +20,6 @@ public class PuzzleUnit : MonoBehaviour {
 
 	// Music
 	public AudioClip unitMusic;
-	
-	// Location
-	public int xIndex;
-	public int yIndex;
 	// Next unit?
 
 	// Use this for initialization

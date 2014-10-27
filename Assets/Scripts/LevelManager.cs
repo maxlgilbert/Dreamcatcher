@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour {
 	public bool readyToSwitchUnits = false;
 	
 	public Platform ground;
+	public GameObject obstacle;
 	
 	public static LevelManager Instance
 	{
@@ -70,7 +71,7 @@ public class LevelManager : MonoBehaviour {
 		_currentPuzzleUnit += 1;
 		puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
 		playUnitClip(_currentPuzzleUnit);
-		iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",MainCharacter.Instance.gameObject.transform.position.x,"time",1.0));
+		iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",MainCharacter.Instance.gameObject.transform.position.x,"y",4+MainCharacter.Instance.gameObject.transform.position.y,"time",1.0));
 	}
 
 
