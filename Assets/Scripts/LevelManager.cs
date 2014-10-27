@@ -77,6 +77,6 @@ public class LevelManager : MonoBehaviour {
 		_audioSource.Stop();
 		_audioSource.clip = puzzleUnits[unit].unitMusic;
 		_audioSource.Play();
-		Debug.LogError(unit);
+		//Debug.LogError(unit);
 	}
 }
