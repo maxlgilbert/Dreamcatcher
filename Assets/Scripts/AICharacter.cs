@@ -7,6 +7,8 @@ public class AICharacter : Character {
 	private List<AStarNode> _nodePlan;
 	private int _step;
 	private int _currTransitionCell = 0;
+	public float accuracy;
+	public int mistakeFreeTime;
 	
 	//public CellObject goalCell;
 
@@ -18,6 +20,7 @@ public class AICharacter : Character {
 	private AStar _aStar;
 
 	public bool won = false;
+	private bool _planning = false;
 
 	void Awake () {
 		_plan = new List<CellAction>();
@@ -49,13 +52,30 @@ public class AICharacter : Character {
 				for (int i = 0; i < _nodePlan.Count-1; i++) {
 					_plan.Add(CellAction.GetAction(_nodePlan[i] as CellNode,_nodePlan[i+1] as CellNode));
 				}*/
+				//StartCoroutine("PlanOutPath");
 				PlanOutPath();
 				_step++;
 			}
-			if (_step < _plan.Count && beatManager.beatNumber >= 0){
-				ExecuteCellAction(_plan[_step]);
-				//Debug.LogError(_plan[_step].gameObject.name);
-				_step++;
+			if (!_planning && _step < _plan.Count && beatManager.beatNumber >= 0){
+				float randF = Random.value;
+				if (_step < mistakeFreeTime || randF <= accuracy) {
+					ExecuteCellAction(_plan[_step]);
+					//Debug.LogError(_plan[_step].gameObject.name);
+					_step++;
+				} else {
+					//Debug.LogError("Made a new plan!");
+					//ExecuteCellAction(CellGridManager.Instance.upLeft);
+					_plan = new List<CellAction>();
+					int numberOfWaits = Random.Range(1,mistakeFreeTime);
+					for (int i = 0; i < numberOfWaits; i++){ 
+						_plan.Add(CellGridManager.Instance.wait);
+					}
+					_step = 0;
+					_currentStartCell = _currentCell;
+					_currTransitionCell = _nextTransitionCell;
+					//StartCoroutine("PlanOutPath");
+					PlanOutPath();
+				}
 			}/* else {
 				_currTransitionCell++;
 				startCell = goalCell;
@@ -84,18 +104,21 @@ public class AICharacter : Character {
 		}
 	}
 
-	public void PlanOutPath(){
-
-		for (int i = 0; i < LevelManager.Instance.temporaryTotalPuzzleUnits; i++) {
+	private void PlanOutPath(){
+		_planning = true;
+		_aStar = new AStar(_maxDepth);
+		for (int i = _nextTransitionCell; i < LevelManager.Instance.temporaryTotalPuzzleUnits; i++) {
 			_currentGoalCell = LevelManager.Instance.GetNextTransitionCell (_currTransitionCell);
-			//_currentGoalCell.cellNode.beat = -1;
 			_currTransitionCell++;
+			//Debug.LogError(_currentStartCell.cellNode.ToString() +  _currentGoalCell.cellNode.ToString());
 			_nodePlan = _aStar.FindPath(_currentStartCell.cellNode,_currentGoalCell.cellNode);
 			for (int j = 0; j < _nodePlan.Count-1; j++) {
 				_plan.Add(CellAction.GetAction(_nodePlan[j] as CellNode,_nodePlan[j+1] as CellNode));
 			}
 			_currentStartCell = _currentGoalCell;
+			//yield return null; 
 		}
+		_planning = false;
 
 	}
 }

@@ -12,11 +12,13 @@ public class CellObject : MonoBehaviour {
 	[HideInInspector] public CellObject returnCell;
 	[HideInInspector] public Vector2 location;
 	public bool transitionCell;
+	[HideInInspector] public bool transitionAICell;
 
 	public CellType cellType;
 	private CellGrid _cellGrid;
 	void Awake () {
 		location = new Vector2(gameObject.transform.position.x,gameObject.transform.position.y);
+		transitionAICell = transitionCell;
 
 	}
 	// Use this for initialization

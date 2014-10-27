@@ -16,6 +16,7 @@ public class Character : MonoBehaviour {
 	protected CellObject _currentCell;
 	protected CellObject _previousCell;
 	protected bool _iAmRobot = false;
+	protected int _nextTransitionCell = 0;
 	// Use this for initialization
 	protected virtual void Initialize () {
 		BeatManager.Instance.Beat += BeatHandler;
@@ -79,6 +80,10 @@ public class Character : MonoBehaviour {
 				_currentCell.transitionCell = false;
 				LevelManager.Instance.readyToSwitchUnits = true;
 			}
+		}
+		if (_currentCell.transitionAICell) {
+			_currentCell.transitionAICell = false;
+			_nextTransitionCell++;
 		}
 		if (_currentCell.cellType == CellType.Ground) {
 			rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
