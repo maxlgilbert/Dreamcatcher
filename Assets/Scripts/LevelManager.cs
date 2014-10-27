@@ -15,6 +15,8 @@ public class LevelManager : MonoBehaviour {
 
 	public bool readyToSwitchUnits = false;
 	
+	public Platform ground;
+	
 	public static LevelManager Instance
 	{
 		get 

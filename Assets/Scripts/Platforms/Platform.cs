@@ -11,9 +11,9 @@ public class Platform : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		BeatManager.Instance.Beat += BeatHandler;
-		currentCell = gameObject.GetComponentInParent<CellObject>() as CellObject;
+		//currentCell = gameObject.GetComponentInParent<CellObject>() as CellObject;
 		if (currentCell == null) {
-			currentCell = gameObject.GetComponent<CellObject>() as CellObject;
+			//currentCell = gameObject.GetComponent<CellObject>() as CellObject;
 		}
 		if (currentCell != null) {
 			currentCell.cellType = cellType;

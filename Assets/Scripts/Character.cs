@@ -71,11 +71,12 @@ public class Character : MonoBehaviour {
 		horizontalVelocity = (target.x - rigidbody.position.x)/duration;
 		verticalVelocity = (target.y - rigidbody.position.y)/duration;
 		rigidbody.velocity = new Vector3(horizontalVelocity, verticalVelocity, rigidbody.velocity.z);
-		yield return new WaitForSeconds(duration*.9f);
+		yield return new WaitForSeconds(duration*.8f);
 		// PERFORM CELL BEHAVIOR
 		// If ground
 		if (_currentCell.transitionCell) {
 			if (!_iAmRobot) {
+				_currentCell.transitionCell = false;
 				LevelManager.Instance.readyToSwitchUnits = true;
 			}
 		}

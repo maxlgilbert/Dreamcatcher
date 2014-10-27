@@ -10,10 +10,10 @@ public class CellObject : MonoBehaviour {
 	public int y;
 	public CellNode cellNode;
 	[HideInInspector] public CellObject returnCell;
-	public Vector2 location;
+	[HideInInspector] public Vector2 location;
 	public bool transitionCell;
 
-	[HideInInspector] public CellType cellType;
+	public CellType cellType;
 	void Awake () {
 		location = new Vector2(gameObject.transform.position.x,gameObject.transform.position.y);
 
@@ -22,8 +22,12 @@ public class CellObject : MonoBehaviour {
 	void Start () {
 		cellNode = new CellNode(x,y);
 		CellGridManager.Instance.AddCell(this);
-		if (cellType == CellType.Ground || transitionCell) {
-			renderer.material = CellGridManager.Instance.ground;
+		if (cellType == CellType.Ground) {
+			//renderer.material = CellGridManager.Instance.ground;
+			Vector3 location = gameObject.transform.position;
+			location.y -= 1.867725f;
+			Platform newGround = Instantiate(LevelManager.Instance.ground, location,Quaternion.identity) as Platform;
+			newGround.currentCell = this;
 		} else if (cellType == CellType.Obstacle){
 			renderer.material = CellGridManager.Instance.obstacle;
 		} else {
