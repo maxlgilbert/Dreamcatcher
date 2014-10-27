@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class LevelManager : MonoBehaviour {
 	
 	public List<PuzzleUnit> puzzleUnits;
+	public int temporaryTotalPuzzleUnits = 4; // TODO DELETE THANKS
 	private int _currentPuzzleUnit = 0;
 
 	private float _currentStartTime = 0.0f;
@@ -17,6 +18,8 @@ public class LevelManager : MonoBehaviour {
 	
 	public Platform ground;
 	public GameObject obstacle;
+
+	private CellObject _currentTransitionCell;
 	
 	public static LevelManager Instance
 	{
@@ -32,7 +35,7 @@ public class LevelManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		_currentTransitionCell = puzzleUnits [_currentPuzzleUnit].transitionCell;
 	}
 	
 	// Update is called once per frame
@@ -71,7 +74,9 @@ public class LevelManager : MonoBehaviour {
 		_currentPuzzleUnit += 1;
 		puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
 		playUnitClip(_currentPuzzleUnit);
-		iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",MainCharacter.Instance.gameObject.transform.position.x,"y",4+MainCharacter.Instance.gameObject.transform.position.y,"time",1.0));
+		_currentTransitionCell = puzzleUnits [_currentPuzzleUnit].transitionCell;
+		Vector3 newCameraLocation = new Vector3 (_currentTransitionCell.gameObject.transform.position.x-12,MainCharacter.Instance.rigidbody.position.y, 0);
+		iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
 	}
 
 
@@ -81,5 +86,12 @@ public class LevelManager : MonoBehaviour {
 		_audioSource.clip = puzzleUnits[unit].unitMusic;
 		_audioSource.Play();
 		//Debug.LogError(unit);
+	}
+
+	public CellObject GetNextTransitionCell (int nextIndex) {
+		if (nextIndex < puzzleUnits.Count) {
+			return puzzleUnits[nextIndex].transitionCell;
+		}
+		return null;
 	}
 }

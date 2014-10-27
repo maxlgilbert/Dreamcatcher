@@ -22,6 +22,8 @@ public class PuzzleUnit : MonoBehaviour {
 	public AudioClip unitMusic;
 	// Next unit?
 
+	public CellObject transitionCell;
+
 	// Use this for initialization
 	void Awake () {
 		duration = 0.0f;

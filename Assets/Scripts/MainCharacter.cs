@@ -231,7 +231,7 @@ public class MainCharacter : Character {
 
 	void Update() {
 		//Debug.LogError (rigidbody.velocity);
-		CheckGroundedness();
+		//CheckGroundedness();
 		CheckInput();
 	}
 }

@@ -23,7 +23,7 @@ public class CellNode : AStarNode {
 	public override float estimate (AStarNode other)
 	{
 		CellNode otherCellNode = other as CellNode;
-		return Vector2.Distance(_position,new Vector2(otherCellNode.x,otherCellNode.y)) + this.beat;
+		return Vector2.Distance (_position, new Vector2 (otherCellNode.x, otherCellNode.y));// + this.beat;
 	}
 
 	public override bool Equals (AStarNode other)

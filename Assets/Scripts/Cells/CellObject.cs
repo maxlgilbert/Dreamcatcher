@@ -34,10 +34,12 @@ public class CellObject : MonoBehaviour {
 			location.y -= 1.867725f;
 			Platform newGround = Instantiate(LevelManager.Instance.ground, location,Quaternion.identity) as Platform;
 			newGround.currentCell = this;
+			newGround.transform.parent = gameObject.transform;
 		} else if (cellType == CellType.Obstacle){
 			Vector3 location = gameObject.transform.position;
 			location.y -= .867725f;
-			Instantiate(LevelManager.Instance.obstacle, location,Quaternion.identity);
+			GameObject obstacle = Instantiate(LevelManager.Instance.obstacle, location,Quaternion.identity) as GameObject;
+			obstacle.transform.parent = gameObject.transform;
 		} else {
 			renderer.material = CellGridManager.Instance.empty;
 		}
