@@ -17,6 +17,8 @@ public class LevelManager : MonoBehaviour {
 	public bool readyToSwitchUnits = false;
 	
 	public Platform ground;
+	public MovingPlatform movingGround;
+	public MovingPlatform movingObstacle;
 	public GameObject obstacle;
 
 	private CellObject _currentTransitionCell;
