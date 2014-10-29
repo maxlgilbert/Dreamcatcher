@@ -68,8 +68,8 @@ public class BeatManager : MonoBehaviour {
 			Debug.LogError("You won!");
 			running = false;
 		} else if (gameState == GameState.Lose) {
-			Debug.LogError("You lose!");
-			running = false;
+			Debug.LogError("You lose (add losing back in)!");
+			//running = false;
 		}
 	}
 	// Update is called once per frame
