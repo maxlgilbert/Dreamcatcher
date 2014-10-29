@@ -24,6 +24,8 @@ public class PuzzleUnit : MonoBehaviour {
 
 	[HideInInspector] public CellObject transitionCell;
 
+	[HideInInspector] public CellObject checkPointCell;
+
 	// Use this for initialization
 	void Awake () {
 		duration = 0.0f;

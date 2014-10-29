@@ -192,6 +192,9 @@ public class MainCharacter : Character {
 		} else {
 			onBeat = false;
 			hasMovedOnBeat = false;
+			if (_currentCell.cellType == CellType.Empty) {
+				ExecuteCellAction(CellGridManager.Instance.down);
+			}
 		}
 		
 	}

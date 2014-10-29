@@ -20,6 +20,8 @@ public class CellObject : MonoBehaviour {
 	public List<Vector2> pathActions = new List<Vector2>();
 	public CellType cellType;
 	private CellGrid _cellGrid;
+	public bool returnToCheckpoint;
+	public bool checkPoint;
 	void Awake () {
 		location = new Vector2(gameObject.transform.position.x,gameObject.transform.position.y);
 		transitionAICell = transitionCell;
@@ -69,6 +71,10 @@ public class CellObject : MonoBehaviour {
 		renderer.enabled = false;
 		if (transitionCell) {
 			LevelManager.Instance.puzzleUnits[this.puzzleUnit].transitionCell = this;
+		}
+
+		if (checkPoint) {
+			LevelManager.Instance.puzzleUnits[this.puzzleUnit].checkPointCell = this;
 		}
 	}
 	
