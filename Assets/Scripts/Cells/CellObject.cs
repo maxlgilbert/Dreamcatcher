@@ -3,7 +3,9 @@ using System.Collections;
 public enum CellType {
 	Empty,
 	Ground,
-	Obstacle
+	Obstacle,
+	MovingGround,
+	MovingObstacle
 }
 public class CellObject : MonoBehaviour {
 	public int x;
