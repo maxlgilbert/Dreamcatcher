@@ -12,6 +12,7 @@ public class CellObject : MonoBehaviour {
 	[HideInInspector] public CellObject returnCell;
 	[HideInInspector] public Vector2 location;
 	public bool transitionCell;
+	public int puzzleUnit;
 	[HideInInspector] public bool transitionAICell;
 
 	public CellType cellType;
@@ -46,6 +47,9 @@ public class CellObject : MonoBehaviour {
 			renderer.material = CellGridManager.Instance.empty;
 		}
 		renderer.enabled = false;
+		if (transitionCell) {
+			LevelManager.Instance.puzzleUnits[this.puzzleUnit].transitionCell = this;
+		}
 	}
 	
 	// Update is called once per frame
