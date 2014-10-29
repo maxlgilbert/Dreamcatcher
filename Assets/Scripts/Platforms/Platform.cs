@@ -23,13 +23,13 @@ public class Platform : MonoBehaviour {
 		} else {
 			Debug.LogError("No parent cell specified!");
 		}
-		if (currentCell.transitionCell) {
+		/*if (currentCell.transitionCell) {
 			renderer.material = CellGridManager.Instance.ground;
 		} else if (cellType == CellType.Obstacle){
 			renderer.material = CellGridManager.Instance.obstacle;
 		} else {
 			renderer.material = CellGridManager.Instance.empty;
-		}
+		}*/
 		Initialize();
 	}
 	protected virtual void Initialize(){

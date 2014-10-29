@@ -26,6 +26,9 @@ public class CellAction : AStarAction {
 		CellNode neighborNode;
 		if (neighborObject != null) {
 			neighborNode = new CellNode(x,y);
+			if (directionX == 0 && directionY == 0) {
+				neighborNode.waitNode = true;
+			}
 			neighborNode.beat = currCellNode.beat+1;
 		} else {
 			return neighborList;

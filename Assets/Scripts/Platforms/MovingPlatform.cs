@@ -41,7 +41,7 @@ public class MovingPlatform : Platform {
 	}
 	protected override void BeatHandler (BeatManager beatManager)
 	{
-		if (beatManager.beatNumber == -1) {
+		if (beatManager.beatNumber == -3) {
 			List<CellNode> affectedNodes = new List<CellNode>();
 			affectedNodes.Add(currentCell.cellNode);
 			for (int i =0; i < _pathActions.Count; i++) {
