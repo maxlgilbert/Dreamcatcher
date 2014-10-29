@@ -21,6 +21,9 @@ public class MainUIManager : MonoBehaviour {
 	public Texture2D beatMeterTarget;
 	public Texture2D beatMeterNote;
 
+	public Texture2D winScreen;
+	public Texture2D loseScreen;
+
 	public GameObject daisy;
 	public GUIText timeElapsed;
 	public GUIText distanceAway;
@@ -33,12 +36,18 @@ public class MainUIManager : MonoBehaviour {
 	private int beatMeterFrameNumber;
 	private int beatMeterFrameNumberSec;
 	private bool gotThroughOpening;
+	private bool drawWinScreen;
+	private bool drawLoseScreen;
 
 	void Start() {
 		gotThroughOpening = false;
+		drawWinScreen = false;
+		drawLoseScreen = false;
+
 		BeatManager.Instance.Beat += BeatHandler;
 		LevelManager.Instance.Switched += SwitchedHandler;
 		LevelManager.Instance.Looped += LoopedHandler;
+		LevelManager.Instance.GameStateChange += GameStateHandler;
 		levelManager = GameObject.Find("Managers").GetComponent<LevelManager>();
 		beatMeterFrameNumber = 0;
 		beatMeterFrameNumberSec = 0;
@@ -192,6 +201,22 @@ public class MainUIManager : MonoBehaviour {
 		beatMeterFrameNumberSec = 0;
 		gotThroughOpening = true;
 	}
+
+	private void GameStateHandler(GameState gameState) {
+		if (gameState == GameState.Win) {
+			drawWinScreen = true;
+		} else if (gameState == GameState.Lose) {
+			drawLoseScreen = true;
+		}
+	}
+
+	private void DrawWinScreen() {
+		GUI.DrawTexture(new Rect(Screen.width/2 - winScreen.width/2, Screen.height/2 - 50, winScreen.width, winScreen.height), winScreen);
+	}
+
+	private void DrawLoseScreen() {
+		GUI.DrawTexture(new Rect(Screen.width/2 - winScreen.width/2, Screen.height/2 - 50, loseScreen.width, loseScreen.height), loseScreen);
+	}
     
     void OnGUI() {
 //		DrawOverlay();
@@ -200,6 +225,12 @@ public class MainUIManager : MonoBehaviour {
 		}
 		DrawDistanceMeter();
 		DrawBeatMeter();
+		if (drawWinScreen) {
+			DrawWinScreen();
+		}
+		if (drawLoseScreen) {
+			DrawLoseScreen();
+		}
 	}
 
 	void FixedUpdate() {
