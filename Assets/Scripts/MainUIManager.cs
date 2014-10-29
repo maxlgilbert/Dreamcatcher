@@ -16,6 +16,10 @@ public class MainUIManager : MonoBehaviour {
 	public Texture2D circleDaisy;
 	public Texture2D circleDream;
 
+	public Texture2D beatMeterBar;
+	public Texture2D beatMeterTarget;
+	public Texture2D beatMeterNote;
+
 	public GameObject daisy;
 	public GUIText timeElapsed;
 	public GUIText distanceAway;
@@ -103,6 +107,14 @@ public class MainUIManager : MonoBehaviour {
 		GUI.EndGroup();
 	}
 
+	private void DrawBeatMeter() {
+		GUI.BeginGroup(new Rect(Screen.width/2 - (beatMeterBar.width/2), Screen.height/9 - 30, beatMeterBar.width, beatMeterBar.height));
+			GUI.DrawTexture(new Rect(0, 0, beatMeterBar.width, beatMeterBar.height), beatMeterBar);
+			GUI.DrawTexture(new Rect(20, 2, beatMeterTarget.width, beatMeterTarget.height), beatMeterTarget);
+			GUI.DrawTexture(new Rect(50, 2, beatMeterNote.width, beatMeterNote.height), beatMeterNote);
+		GUI.EndGroup();
+	}
+
 //	private void DrawOverlay() {
 //		GUI.DrawTexture(new Rect(0, 0, overlay.width, overlay.height), overlay);
 //	}
@@ -124,6 +136,7 @@ public class MainUIManager : MonoBehaviour {
 			DrawPauseMenu();
 		}
 		DrawDistanceMeter();
+		DrawBeatMeter();
 	}
 
 	void Update() {

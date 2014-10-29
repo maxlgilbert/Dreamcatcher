@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class PuzzleUnit : MonoBehaviour {
 	// Beat pattern
-	[SerializeField] private List<float> beatPattern;
+	[SerializeField] public List<float> beatPattern;
 
 	// Completed?
 	public bool completed = false;
