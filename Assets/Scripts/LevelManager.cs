@@ -96,4 +96,8 @@ public class LevelManager : MonoBehaviour {
 		}
 		return null;
 	}
+
+	public CellObject GetCheckPointCell() {
+		return puzzleUnits[_currentPuzzleUnit].checkPointCell;
+	}
 }

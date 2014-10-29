@@ -104,7 +104,7 @@ public class Character : MonoBehaviour {
 			_currentCell.transitionAICell = false;
 			_nextTransitionCell++;
 		}
-		if (_currentCell.cellType == CellType.Ground) {
+		if (_currentCell.cellType == CellType.Ground || _currentCell.cellType == CellType.MovingGround) {
 			rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
 			rigidbody.MovePosition(target);
 
@@ -118,10 +118,10 @@ public class Character : MonoBehaviour {
 				}
 			}
 
-		} else if (_currentCell.cellType == CellType.Obstacle) {
+		} else if (_currentCell.cellType == CellType.Obstacle || _currentCell.cellType == CellType.MovingObstacle) {
 			CellObject tempCell = _currentCell;
-			if (_currentCell.returnCell != null) {
-				_currentCell = _currentCell.returnCell;
+			if (_currentCell.returnToCheckpoint) {
+				_currentCell = LevelManager.Instance.GetCheckPointCell();
 			} else {
 				_currentCell = _previousCell;
 			}

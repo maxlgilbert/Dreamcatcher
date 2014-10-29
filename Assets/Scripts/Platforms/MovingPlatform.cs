@@ -87,6 +87,5 @@ public class MovingPlatform : Platform {
 		yield return new WaitForSeconds(_timeOfMovement*.75f);
 		gameObject.rigidbody.velocity = new Vector3(0,0,0);
 		gameObject.rigidbody.MovePosition(targetLocation);
-		Debug.LogError(targetLocation);
 	}
 }

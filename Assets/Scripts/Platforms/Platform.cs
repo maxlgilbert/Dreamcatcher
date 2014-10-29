@@ -5,9 +5,11 @@ public class Platform : MonoBehaviour {
 
 	[HideInInspector] public CellObject currentCell;
 	
-	public CellObject returnCell;
+	private CellObject _returnCell;
 
 	public CellType cellType;
+
+	[HideInInspector] public bool returnToCheckPoint;
 	// Use this for initialization
 	void Start () {
 		BeatManager.Instance.Beat += BeatHandler;
@@ -17,7 +19,7 @@ public class Platform : MonoBehaviour {
 		}
 		if (currentCell != null) {
 			currentCell.cellType = cellType;
-			currentCell.returnCell = this.returnCell;
+			//currentCell.returnCell = this.returnCell;
 		} else {
 			Debug.LogError("No parent cell specified!");
 		}
