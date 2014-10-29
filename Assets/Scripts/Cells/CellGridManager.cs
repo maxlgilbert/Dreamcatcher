@@ -52,11 +52,11 @@ public class CellGridManager : MonoBehaviour {
 		actions.Add(up);
 		actions.Add(upRight);
 		actions.Add(right);
-		//actions.Add(left);
-		//actions.Add(upLeft);
+		actions.Add(left);
+		actions.Add(upLeft);
 		//actions.Add(right);
 		//actions.Add(down);
-		actions.Add(wait);
+		//actions.Add(wait);
 		_allCellNodes = new CellObject[width,height];
 		timeMapNodes = new Dictionary<Vector2, Dictionary<int, CellType>>();
 	}
