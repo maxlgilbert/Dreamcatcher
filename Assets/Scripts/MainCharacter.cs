@@ -46,7 +46,7 @@ public class MainCharacter : Character {
 
 		this.gameObject.renderer.enabled = false;
 		_mainCamera = Camera.main;
-		BEAT_WINDOW = .6f * BeatManager.Instance.beatLength;
+		BEAT_WINDOW = .3f;// * BeatManager.Instance.beatLength;
 		Initialize();
 		BeatManager.Instance.BeatWindowChanged+=BeatWindowChangedHandler;
 
@@ -246,6 +246,13 @@ public class MainCharacter : Character {
 	void Update() {
 		//Debug.LogError (rigidbody.velocity);
 		//CheckGroundedness();
+		Vector3 newCameraLocation = new Vector3 (rigidbody.transform.position.x,rigidbody.position.y,0);
+		newCameraLocation -= Camera.main.rigidbody.position;
+		newCameraLocation *=.075f;
+		newCameraLocation += Camera.main.rigidbody.position;
+		newCameraLocation.z = Camera.main.rigidbody.position.z;
+		//iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
+		Camera.main.rigidbody.MovePosition(newCameraLocation);
 		CheckInput();
 	}
 }

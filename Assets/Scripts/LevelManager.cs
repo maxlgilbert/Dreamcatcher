@@ -93,8 +93,8 @@ public class LevelManager : MonoBehaviour {
 			puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
 			playUnitClip(_currentPuzzleUnit);
 			_currentTransitionCell = puzzleUnits [_currentPuzzleUnit].transitionCell;
-			Vector3 newCameraLocation = new Vector3 (_currentTransitionCell.gameObject.transform.position.x-12,MainCharacter.Instance.rigidbody.position.y, 0);
-			iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
+//			Vector3 newCameraLocation = new Vector3 (_currentTransitionCell.gameObject.transform.position.x-12,MainCharacter.Instance.rigidbody.position.y, 0);
+//			iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
 		} else {
 			OnGameStateChange(GameState.Win);
 		}
