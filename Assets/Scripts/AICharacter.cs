@@ -76,7 +76,8 @@ public class AICharacter : Character {
 					//StartCoroutine("PlanOutPath");
 					PlanOutPath();
 				}
-			}/* else {
+			}
+			/* else {
 				_currTransitionCell++;
 				startCell = goalCell;
 				goalCell = LevelManager.Instance.GetNextTransitionCell (_currTransitionCell);
@@ -107,7 +108,7 @@ public class AICharacter : Character {
 	private void PlanOutPath(){
 		_planning = true;
 		_aStar = new AStar(_maxDepth);
-		for (int i = _nextTransitionCell; i < LevelManager.Instance.temporaryTotalPuzzleUnits; i++) {
+		for (int i = _nextTransitionCell; i < LevelManager.Instance.puzzleUnits.Count-1; i++) {
 			_currentGoalCell = LevelManager.Instance.GetNextTransitionCell (_currTransitionCell);
 			_currTransitionCell++;
 			//Debug.LogError(_currentStartCell.cellNode.ToString() +  _currentGoalCell.cellNode.ToString());

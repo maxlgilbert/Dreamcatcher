@@ -21,7 +21,7 @@ public class BeatManager : MonoBehaviour {
 	float currentTime = 0.0f;
 	float lastBeat = 0.0f;
 	float startingTime = 0.0f;
-
+	public bool running = true;
 	private static BeatManager instance;
 	
 	public static BeatManager Instance
@@ -42,6 +42,7 @@ public class BeatManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		//StartCoroutine("BeatUpdate");
+		LevelManager.Instance.GameStateChange += OnGameStateChanged;
 	}
 	public delegate void BeatEventHandler(BeatManager beatManager);
 	public event BeatEventHandler Beat;
@@ -59,6 +60,16 @@ public class BeatManager : MonoBehaviour {
 		if (BeatWindowChanged != null) {
 			//Debug.LogError(windowOpen);
 			BeatWindowChanged(this);
+		}
+	}
+
+	public void OnGameStateChanged (GameState gameState) {
+		if (gameState == GameState.Win) {
+			Debug.LogError("You won!");
+			running = false;
+		} else if (gameState == GameState.Lose) {
+			Debug.LogError("You lose!");
+			running = false;
 		}
 	}
 	// Update is called once per frame
@@ -92,55 +103,57 @@ public class BeatManager : MonoBehaviour {
 	}
 
 	void Update () {
-		float passedTime = Time.time - lastBeat;
+		if (running) {
+			float passedTime = Time.time - lastBeat;
 
-		if(Time.time - _timeToTwoSeconds >=1.98f) {
-			if(LevelManager.Instance.readyToSwitchUnits) {
-				LevelManager.Instance.SwitchUnits(beatNumber);
-				//_elapsedBeatTime += beatLength;
-				//lastBeat = startingTime + _elapsedBeatTime;
-				_elapsedBeatTime = Time.time - startingTime;
-				lastBeat = Time.time;
-				//Debug.LogError(lastBeat);
-				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
+			if(Time.time - _timeToTwoSeconds >=1.98f) {
+				if(LevelManager.Instance.readyToSwitchUnits) {
+					LevelManager.Instance.SwitchUnits(beatNumber);
+					//_elapsedBeatTime += beatLength;
+					//lastBeat = startingTime + _elapsedBeatTime;
+					_elapsedBeatTime = Time.time - startingTime;
+					lastBeat = Time.time;
+					//Debug.LogError(lastBeat);
+					UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
+					OnBeat();
+					beatNumber++;
+				}
+				_timeToTwoSeconds = Time.time + (2.0f - (Time.time - _timeToTwoSeconds));
+				//Debug.LogError("2!!");
+			} else if (passedTime >= beatLength) {
+				if (beatNumber > 0) {
+					_elapsedBeatTime += beatLength;
+					lastBeat = startingTime + _elapsedBeatTime;
+					//Debug.LogError(lastBeat);
+					UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
+				}
+				if (beatNumber == 0) {
+					LevelManager.Instance.playUnitClip(0);
+					lastBeat = Time.time;
+					startingTime = Time.time;
+					_timeToTwoSeconds = Time.time;
+					UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
+				}
 				OnBeat();
+				if (beatNumber < 0) {
+					lastBeat = Time.time;
+				}
 				beatNumber++;
-			}
-			_timeToTwoSeconds = Time.time + (2.0f - (Time.time - _timeToTwoSeconds));
-			//Debug.LogError("2!!");
-		} else if (passedTime >= beatLength) {
-			if (beatNumber > 0) {
-				_elapsedBeatTime += beatLength;
-				lastBeat = startingTime + _elapsedBeatTime;
-				//Debug.LogError(lastBeat);
-				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
-			}
-			if (beatNumber == 0) {
-				LevelManager.Instance.playUnitClip(0);
-				lastBeat = Time.time;
-				startingTime = Time.time;
-				_timeToTwoSeconds = Time.time;
-				UpdateBeatInformation(LevelManager.Instance.getNextBeatLength(beatNumber));
-			}
-			OnBeat();
-			if (beatNumber < 0) {
-				lastBeat = Time.time;
-			}
-			beatNumber++;
-		}else if (beatNumber >= -1) {
-			if (passedTime >= beatLength - beatWindow/2.0f) {
-				if (!windowOpen){
-					windowOpen = true;
-					//Debug.LogError(beatNumber + " " + windowOpen + " " + passedTime);
+			}else if (beatNumber >= -1) {
+				if (passedTime >= beatLength - beatWindow/2.0f) {
+					if (!windowOpen){
+						windowOpen = true;
+						//Debug.LogError(beatNumber + " " + windowOpen + " " + passedTime);
+						OnBeatWindowChanged();
+					}
+				}else if (passedTime >= beatWindow/2.0f && windowOpen) {
+					windowOpen = false;
+					//Debug.LogError(beatNumber + " " + windowOpen+ " " + passedTime);
 					OnBeatWindowChanged();
 				}
-			}else if (passedTime >= beatWindow/2.0f && windowOpen) {
-				windowOpen = false;
-				//Debug.LogError(beatNumber + " " + windowOpen+ " " + passedTime);
-				OnBeatWindowChanged();
 			}
-		}
 
+		}
 	}
 
 
