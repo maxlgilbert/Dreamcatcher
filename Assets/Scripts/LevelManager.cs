@@ -2,10 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum GameState {
+	Win,
+	Lose,
+	Pause
+}
 public class LevelManager : MonoBehaviour {
 	
 	public List<PuzzleUnit> puzzleUnits;
-	public int temporaryTotalPuzzleUnits = 4; // TODO DELETE THANKS
+	//public int temporaryTotalPuzzleUnits = 4; // TODO DELETE THANKS
 	private int _currentPuzzleUnit = 0;
 
 	private float _currentStartTime = 0.0f;
@@ -72,17 +77,30 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
+	
+	public delegate void GameStateHandler(GameState gameState);
+	public event GameStateHandler GameStateChange;
+	public void OnGameStateChange(GameState gameState) {
+		if (GameStateChange!=null) {
+			GameStateChange(gameState);
+		}
+	}
+
+
 	public void SwitchUnits (int beat) {
 		readyToSwitchUnits = false;
 		MainCharacter.Instance.GetCurrentCell().transitionCell = false; //TODO make it smarter!
 		_currentPuzzleUnit += 1;
-		puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
-		playUnitClip(_currentPuzzleUnit);
-		_currentTransitionCell = puzzleUnits [_currentPuzzleUnit].transitionCell;
-		Vector3 newCameraLocation = new Vector3 (_currentTransitionCell.gameObject.transform.position.x-12,MainCharacter.Instance.rigidbody.position.y, 0);
-		iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
-
-		OnSwitched();
+		if (_currentPuzzleUnit < puzzleUnits.Count-1) {
+			puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
+			playUnitClip(_currentPuzzleUnit);
+			_currentTransitionCell = puzzleUnits [_currentPuzzleUnit].transitionCell;
+//			Vector3 newCameraLocation = new Vector3 (_currentTransitionCell.gameObject.transform.position.x-12,MainCharacter.Instance.rigidbody.position.y, 0);
+//			iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
+			OnSwitched();
+		} else {
+			OnGameStateChange(GameState.Win);
+		}
 	}
 
 	public delegate void PuzzleUnitHandler();

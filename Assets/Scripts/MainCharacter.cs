@@ -11,6 +11,7 @@ public class MainCharacter : Character {
 	bool isCollidingWithWall; // Used to fix sticky wall via friction. Thx Eric
 	bool onBeat; // The beat window is open for BEAT_WINDOW seconds when this is true
 	bool hasMovedOnBeat; // Whether or not we have moved once on the current beat
+	bool isShaking;
 
 	string savedKey;
 	bool waitingForSecondaryKey;
@@ -38,13 +39,14 @@ public class MainCharacter : Character {
 		isCollidingWithWall = false;
 		onBeat = false;
 		hasMovedOnBeat = false;
+		isShaking = false;
 		
 		savedKey = "";
 		waitingForSecondaryKey = false;
 
 		this.gameObject.renderer.enabled = false;
 		_mainCamera = Camera.main;
-		BEAT_WINDOW = .6f * BeatManager.Instance.beatLength;
+		BEAT_WINDOW = .3f;// * BeatManager.Instance.beatLength;
 		Initialize();
 		BeatManager.Instance.BeatWindowChanged+=BeatWindowChangedHandler;
 
@@ -92,30 +94,32 @@ public class MainCharacter : Character {
 	// will leak through during the beat window.
 	private void CloseSecondaryKeyWindow() {
 		waitingForSecondaryKey = false;
-		if (savedKey == "up") {
-			//List<AStarNode> neighbors = CellGridManager.Instance.up.TryAction(_currentCell);
-			//if (neighbors.Count > 0) {
-//				_currentCell = neighbors[0] as CellNode;
-//				MoveToInTime(rigidbody.position + new Vector3(0.0f,3,0.0f),.3f);
-				ExecuteCellAction(CellGridManager.Instance.up);
-				hasMovedOnBeat = true; //IN HERE????
-				//Debug.Log("up");
-		} else if (savedKey == "left") {
-			//List<AStarNode> neighbors = CellGridManager.Instance.left.TryAction(_currentCell);
-			//if (neighbors.Count > 0) {
-//				_currentCell = neighbors[0] as CellNode;
-//				MoveToInTime(rigidbody.position + new Vector3(-3.0f,0.0f,0.0f),.3f);
-				ExecuteCellAction(CellGridManager.Instance.left);
-				hasMovedOnBeat = true;
-				//Debug.Log("left");
-		} else if (savedKey == "right") {
-			//List<AStarNode> neighbors = CellGridManager.Instance.right.TryAction(_currentCell);
-			//if (neighbors.Count > 0) {
-//				_currentCell = neighbors[0] as CellNode;
-//				MoveToInTime(rigidbody.position + new Vector3(3.0f,0.0f,0.0f),.3f);
-				ExecuteCellAction(CellGridManager.Instance.right);
-				hasMovedOnBeat = true;
-				//Debug.Log("right");
+		if (!isShaking) {
+			if (savedKey == "up") {
+				//List<AStarNode> neighbors = CellGridManager.Instance.up.TryAction(_currentCell);
+				//if (neighbors.Count > 0) {
+	//				_currentCell = neighbors[0] as CellNode;
+	//				MoveToInTime(rigidbody.position + new Vector3(0.0f,3,0.0f),.3f);
+					ExecuteCellAction(CellGridManager.Instance.up);
+					hasMovedOnBeat = true; //IN HERE????
+					//Debug.Log("up");
+			} else if (savedKey == "left") {
+				//List<AStarNode> neighbors = CellGridManager.Instance.left.TryAction(_currentCell);
+				//if (neighbors.Count > 0) {
+	//				_currentCell = neighbors[0] as CellNode;
+	//				MoveToInTime(rigidbody.position + new Vector3(-3.0f,0.0f,0.0f),.3f);
+					ExecuteCellAction(CellGridManager.Instance.left);
+					hasMovedOnBeat = true;
+					//Debug.Log("left");
+			} else if (savedKey == "right") {
+				//List<AStarNode> neighbors = CellGridManager.Instance.right.TryAction(_currentCell);
+				//if (neighbors.Count > 0) {
+	//				_currentCell = neighbors[0] as CellNode;
+	//				MoveToInTime(rigidbody.position + new Vector3(3.0f,0.0f,0.0f),.3f);
+					ExecuteCellAction(CellGridManager.Instance.right);
+					hasMovedOnBeat = true;
+					//Debug.Log("right");
+			}
 		}
 
 		savedKey = "";
@@ -124,7 +128,7 @@ public class MainCharacter : Character {
 	// Handles movement with arrow keys
 	private void CheckInput() {
 
-		if (onBeat && !hasMovedOnBeat) {
+		if (onBeat && !hasMovedOnBeat && !isShaking) {
 
 			// This means up/left/right was pressed earlier, and our secondary key window is open
 			if (waitingForSecondaryKey) {
@@ -166,13 +170,15 @@ public class MainCharacter : Character {
 				Invoke("CloseSecondaryKeyWindow", SECONDARY_KEY_WINDOW);
 	        }
 		}
-		if (!onBeat && ( Input.GetKey("left") || Input.GetKey("right") || Input.GetKey("up"))) {
-			//BadMoveAnimation();
+		if (!isShaking && !onBeat && ( Input.GetKey("left") || Input.GetKey("right") || Input.GetKey("up"))) {
+			StopCoroutine("BadMoveAnimation");
+			StartCoroutine("BadMoveAnimation");
+			//hasMovedOnBeat = true;
 		}
 
 		// A debug key input
 		if (Input.GetKeyUp(KeyCode.Q)) {
-			BadMoveAnimation();
+			StartCoroutine("BadMoveAnimation");
 		}
 	}
 
@@ -206,8 +212,13 @@ public class MainCharacter : Character {
         
     }
 	
-	private void BadMoveAnimation() {
-		iTween.ShakePosition(this.gameObject, new Vector3(0.3f, 0), 0.18f);
+	public IEnumerator BadMoveAnimation() {
+		isShaking = true;
+		iTween.ShakePosition(this.gameObject, new Vector3(0.3f, 0), 0.15f);
+		yield return new WaitForSeconds(.15f);
+		iTween.MoveTo(gameObject,iTween.Hash("x",_currentCell.gameObject.transform.position.x,"y",_currentCell.gameObject.transform.position.y,"time",.1));
+		yield return new WaitForSeconds(.1f);
+		isShaking = false;
 	}
 
 	public CellObject GetCurrentCell () {
@@ -235,6 +246,13 @@ public class MainCharacter : Character {
 	void Update() {
 		//Debug.LogError (rigidbody.velocity);
 		//CheckGroundedness();
+		Vector3 newCameraLocation = new Vector3 (rigidbody.transform.position.x,rigidbody.position.y,0);
+		newCameraLocation -= Camera.main.rigidbody.position;
+		newCameraLocation *=.075f;
+		newCameraLocation += Camera.main.rigidbody.position;
+		newCameraLocation.z = Camera.main.rigidbody.position.z;
+		//iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
+		Camera.main.rigidbody.MovePosition(newCameraLocation);
 		CheckInput();
 	}
 }

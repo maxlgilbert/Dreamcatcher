@@ -100,9 +100,12 @@ public class Character : MonoBehaviour {
 				LevelManager.Instance.readyToSwitchUnits = true;
 			}
 		}
-		if (_currentCell.transitionAICell) {
+		if (_iAmRobot && _currentCell.transitionAICell) {
 			_currentCell.transitionAICell = false;
 			_nextTransitionCell++;
+			if (_nextTransitionCell >= LevelManager.Instance.puzzleUnits.Count-1) {
+				LevelManager.Instance.OnGameStateChange(GameState.Lose);
+			}
 		}
 		if (_currentCell.cellType == CellType.Ground || _currentCell.cellType == CellType.MovingGround) {
 			rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
