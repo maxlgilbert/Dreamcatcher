@@ -18,6 +18,7 @@ public class CellGridManager : MonoBehaviour {
 	public CellAction right;
 	public CellAction down;
 	public CellAction wait;
+	public float yOffset = 1.867725f;
 
 	
 	public Material ground;

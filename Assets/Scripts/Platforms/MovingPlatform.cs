@@ -3,21 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MovingPlatform : Platform {
-	public float percentOfBeat = .5f;
+	private float percentOfBeat = .5f;
 	private float _timeOfMovement;
 	private Vector2 _velocity = new Vector2();
 	private Vector3 initialPosition;
-	public List<Vector2> pathActions = new List<Vector2>();
+	private List<Vector2> _pathActions = new List<Vector2>();
 	private List<CellObject> _pathNodes;
 	private int _currentMove = 0;
 	private int _totalMoves;
+	public float yOffset;
 	
 	void Awake () {
 		initialPosition = gameObject.transform.position;
 	}
 
+	public void InitializePath (List<Vector2> path) {
+		_pathActions = path;
+	}
+
 	protected override void Initialize () {
-		_timeOfMovement = BeatManager.Instance.beatLength*percentOfBeat;
+		_timeOfMovement = .15f;//BeatManager.Instance.beatLength*percentOfBeat;
 		_pathNodes = new List<CellObject>();
 		_pathNodes.Add(currentCell);
 
@@ -39,9 +44,9 @@ public class MovingPlatform : Platform {
 		if (beatManager.beatNumber == -1) {
 			List<CellNode> affectedNodes = new List<CellNode>();
 			affectedNodes.Add(currentCell.cellNode);
-			for (int i =0; i < pathActions.Count; i++) {
-				int newXPosition = currentCell.x + (int)pathActions[i].x;
-				int newYPosition = currentCell.y + (int)pathActions[i].y;
+			for (int i =0; i < _pathActions.Count; i++) {
+				int newXPosition = currentCell.x + (int)_pathActions[i].x;
+				int newYPosition = currentCell.y + (int)_pathActions[i].y;
 				currentCell = CellGridManager.Instance.GetCell(newXPosition,newYPosition);
 				if (currentCell == null) {
 					Debug.LogError("Can't move there: " + newXPosition + "," + newYPosition);
@@ -53,6 +58,7 @@ public class MovingPlatform : Platform {
 			currentCell = _pathNodes[0];
 			SetCellTypes();
 		} else if (BeatManager.Instance.beatNumber >= 0){
+			StopCoroutine("Move");
 			StartCoroutine("Move");
 		}
 	}
@@ -70,13 +76,17 @@ public class MovingPlatform : Platform {
 		_currentMove++;
 		_currentMove %= _totalMoves;
 		currentCell.cellType = CellType.Empty;
-		Vector2 previousLocation = currentCell.location;
+		Vector3 previousLocation = gameObject.transform.position;
 		currentCell = _pathNodes[_currentMove];
 		currentCell.cellType = this.cellType;
-		_velocity = (currentCell.location - previousLocation)/_timeOfMovement;
+		Vector3 targetLocation = currentCell.gameObject.transform.position;
+		targetLocation.y += yOffset;
+		//targetLocation.y -= CellGridManager.Instance.yOffset;
+		_velocity = (targetLocation - previousLocation)/_timeOfMovement;
 		gameObject.rigidbody.velocity = new Vector3(_velocity.x,_velocity.y,0);
-		yield return new WaitForSeconds(_timeOfMovement);
+		yield return new WaitForSeconds(_timeOfMovement*.75f);
 		gameObject.rigidbody.velocity = new Vector3(0,0,0);
-		//gameObject.rigidbody.MovePosition(initialPosition);
+		gameObject.rigidbody.MovePosition(targetLocation);
+		Debug.LogError(targetLocation);
 	}
 }
