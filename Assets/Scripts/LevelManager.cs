@@ -63,6 +63,8 @@ public class LevelManager : MonoBehaviour {
 					SwitchUnits(beat);
 					return puzzleUnits[_currentPuzzleUnit].getNextBeatLength(beat);
 				} else {*/
+					OnLooped();
+
 					puzzleUnits[_currentPuzzleUnit].startingBeatNumber = beat;
 					BeatManager.Instance.LoopBeatTo(curr.startingBeatNumber);
 					playUnitClip(_currentPuzzleUnit);
@@ -95,12 +97,27 @@ public class LevelManager : MonoBehaviour {
 			_currentTransitionCell = puzzleUnits [_currentPuzzleUnit].transitionCell;
 //			Vector3 newCameraLocation = new Vector3 (_currentTransitionCell.gameObject.transform.position.x-12,MainCharacter.Instance.rigidbody.position.y, 0);
 //			iTween.MoveTo(Camera.main.gameObject,iTween.Hash("x",newCameraLocation.x,"y",newCameraLocation.y,"time",1.0));
+			OnSwitched();
 		} else {
 			OnGameStateChange(GameState.Win);
 		}
 	}
 
+	public delegate void PuzzleUnitHandler();
+	public event PuzzleUnitHandler Switched;
+	public event PuzzleUnitHandler Looped;
 
+	public void OnLooped() {
+		if (Looped!=null) {
+			Looped();
+        }
+    }
+    
+    public void OnSwitched() {
+		if (Switched!=null) {
+			Switched();
+        }
+    }
 
 	public void playUnitClip (int unit) {
 		_audioSource.Stop();
@@ -118,5 +135,13 @@ public class LevelManager : MonoBehaviour {
 
 	public CellObject GetCheckPointCell() {
 		return puzzleUnits[_currentPuzzleUnit].checkPointCell;
+	}
+
+	public PuzzleUnit GetCurrentPuzzleUnit() {
+		return puzzleUnits[_currentPuzzleUnit];
+	}
+
+	public int GetCurrentPuzzleUnitIndex() {
+		return _currentPuzzleUnit;
 	}
 }

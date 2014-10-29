@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MainUIManager : MonoBehaviour {
 	const int BUTTON_WIDTH = 100;
@@ -16,6 +17,10 @@ public class MainUIManager : MonoBehaviour {
 	public Texture2D circleDaisy;
 	public Texture2D circleDream;
 
+	public Texture2D beatMeterBar;
+	public Texture2D beatMeterTarget;
+	public Texture2D beatMeterNote;
+
 	public GameObject daisy;
 	public GUIText timeElapsed;
 	public GUIText distanceAway;
@@ -23,10 +28,28 @@ public class MainUIManager : MonoBehaviour {
 	public GameObject overlayPlane;
 	public GameObject overlayBottomBarPlane;
 
+	public LevelManager levelManager;
+
+	private int beatMeterFrameNumber;
+	private int beatMeterFrameNumberSec;
+	private bool gotThroughOpening;
+
 	void Start() {
+		gotThroughOpening = false;
 		BeatManager.Instance.Beat += BeatHandler;
+		LevelManager.Instance.Switched += SwitchedHandler;
+		LevelManager.Instance.Looped += LoopedHandler;
+		levelManager = GameObject.Find("Managers").GetComponent<LevelManager>();
+		beatMeterFrameNumber = 0;
+		beatMeterFrameNumberSec = 0;
 		Restart();
 //		SetOverlayTexture();
+
+		InvokeRepeating("SetNewFrameNumber", 0, 0.0625f);
+	}
+
+	void SetNewFrameNumber() {
+		beatMeterFrameNumberSec++;
 	}
 
 	void Restart() {
@@ -103,6 +126,47 @@ public class MainUIManager : MonoBehaviour {
 		GUI.EndGroup();
 	}
 
+
+
+	private void DrawBeatMeter() {
+		PuzzleUnit puzzleUnit = levelManager.GetCurrentPuzzleUnit();
+		List<float> beatIntervals = puzzleUnit.beatPattern;
+
+		// scaling beatMeterBar.width - 20 : 8.0f seconds
+		int totalBarLength = beatMeterBar.width - 20;
+		float scaleFactor = 2.0f; // if you increase the scale factor make sure to scale up the notevelocity by the same fraction adn vice versa
+		int startX = (gotThroughOpening) ? 20 : 20 + 356;//+ 285;//beatMeterBar.width; // we want the notes to start off the bar, coming in from the right //150
+		float noteVelocity = 1.98f;
+		float pixelNoteVelocity = totalBarLength / 8.0f * 0.0625f * 2.0f;
+
+		GUI.BeginGroup(new Rect(Screen.width/2 - (beatMeterBar.width/2), Screen.height/9 - 30, beatMeterBar.width, beatMeterBar.height));
+			GUI.DrawTexture(new Rect(0, 0, beatMeterBar.width, beatMeterBar.height), beatMeterBar);
+			//int xstart = (int) (startX + (totalBarLength * 0 * scaleFactor) - (noteVelocity * beatMeterFrameNumber));
+			int xstart = (int) (startX + (totalBarLength * 0 * scaleFactor) - pixelNoteVelocity * beatMeterFrameNumberSec);
+			GUI.DrawTexture(new Rect(xstart, 2, beatMeterNote.width, beatMeterNote.height), beatMeterNote);
+			//Debug.Log ("sup");
+			float runningTotal = 0;
+			//Debug.Log ("beat interval count: " + beatIntervals.Count);
+			for (int i = 0; i < beatIntervals.Count; i++) {
+				float orig = beatIntervals[i];
+				runningTotal += beatIntervals[i];
+
+				float fraction = runningTotal / 8.0f;
+				//int x = (int) (startX + (totalBarLength * fraction * scaleFactor) - (noteVelocity * beatMeterFrameNumber));//(int)((totalBarLength / 8.0f) * runningTotal * scaleFactor - noteVelocity * beatMeterFrameNumber);
+				int x = (int) (startX + (totalBarLength * fraction * scaleFactor) - (pixelNoteVelocity * beatMeterFrameNumberSec));
+	            GUI.DrawTexture(new Rect(x, 2, beatMeterNote.width, beatMeterNote.height), beatMeterNote);
+
+				//Debug.Log("Orig: " + orig + ", " + i + ": " + fraction);
+			}
+
+			GUI.DrawTexture(new Rect(20, 2, beatMeterTarget.width, beatMeterTarget.height), beatMeterTarget);
+			
+		GUI.EndGroup();
+
+	}
+
+
+
 //	private void DrawOverlay() {
 //		GUI.DrawTexture(new Rect(0, 0, overlay.width, overlay.height), overlay);
 //	}
@@ -117,6 +181,17 @@ public class MainUIManager : MonoBehaviour {
 	private void BeatHandler(BeatManager beatManager) {
 		PulseBeatIndicator();
     }
+
+	private void SwitchedHandler() {
+		Debug.Log ("switched puzzle");
+		beatMeterFrameNumberSec = 0;
+	}
+
+	private void LoopedHandler() {
+		Debug.Log ("looped puzzle");
+		beatMeterFrameNumberSec = 0;
+		gotThroughOpening = true;
+	}
     
     void OnGUI() {
 //		DrawOverlay();
@@ -124,6 +199,11 @@ public class MainUIManager : MonoBehaviour {
 			DrawPauseMenu();
 		}
 		DrawDistanceMeter();
+		DrawBeatMeter();
+	}
+
+	void FixedUpdate() {
+		beatMeterFrameNumber++;
 	}
 
 	void Update() {
