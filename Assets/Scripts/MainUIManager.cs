@@ -194,6 +194,7 @@ public class MainUIManager : MonoBehaviour {
 	private void SwitchedHandler() {
 		Debug.Log ("switched puzzle");
 		beatMeterFrameNumberSec = 0;
+		gotThroughOpening = true;
 	}
 
 	private void LoopedHandler() {
