@@ -8,7 +8,7 @@ public class Character : MonoBehaviour {
 	protected float horizontalGroundSpeed;
 	protected float horizontalAirSpeed; // either we adjust friction, or just tune air vs. ground speed. Playing w/ friction may cause slip/slide issues
 	protected float verticalSpeed;
-	public float movementDuration = .1f;
+	public float movementDuration;
 	protected CellAction _currentAction;
 	
 	public CellObject startCell;
@@ -17,6 +17,9 @@ public class Character : MonoBehaviour {
 	protected CellObject _previousCell;
 	protected bool _iAmRobot = false;
 	protected int _nextTransitionCell = 0;
+
+	protected Animator animator;
+
 	// Use this for initialization
 	protected virtual void Initialize () {
 		BeatManager.Instance.Beat += BeatHandler;
@@ -27,6 +30,9 @@ public class Character : MonoBehaviour {
 		
 		_currentAction = CellGridManager.Instance.wait;//new Action(new Vector3(), new Vector3(), 0.0f,this);
 		//_currentCell = startCell.cellNode; TODO better way?
+
+		Transform childSprite = gameObject.transform.GetChild(0);
+		if (childSprite) animator = childSprite.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -72,6 +78,19 @@ public class Character : MonoBehaviour {
 		horizontalVelocity = (target.x - rigidbody.position.x)/duration;
 		verticalVelocity = (target.y - rigidbody.position.y)/duration;
 		rigidbody.velocity = new Vector3(horizontalVelocity, verticalVelocity, rigidbody.velocity.z);
+
+		// START ANIMATIONS
+		if (animator) {
+			// Jumping or falling
+			if (verticalVelocity > 0) {
+				animator.SetTrigger("StartJumping");
+			}
+			// Running
+			else if (horizontalVelocity > 0) {
+				animator.SetBool("Running", true);
+			}
+		}
+
 		yield return new WaitForSeconds(duration*.8f);
 		// PERFORM CELL BEHAVIOR
 		// If ground
@@ -88,6 +107,17 @@ public class Character : MonoBehaviour {
 		if (_currentCell.cellType == CellType.Ground) {
 			rigidbody.velocity = new Vector3(0.0f,0.0f,0.0f);
 			rigidbody.MovePosition(target);
+
+			if (animator) {
+				if (verticalVelocity > 0) {
+					animator.SetTrigger("EndJumping");
+				}
+				// Running
+				else if (horizontalVelocity > 0) {
+					animator.SetBool("Running", false);
+				}
+			}
+
 		} else if (_currentCell.cellType == CellType.Obstacle) {
 			CellObject tempCell = _currentCell;
 			if (_currentCell.returnCell != null) {
@@ -97,8 +127,29 @@ public class Character : MonoBehaviour {
 			}
 			_previousCell = tempCell;
 			MoveToInTime(_currentCell.gameObject.transform.position,duration); //TODO initiate on trigger not just at end?
+
+			if (animator) {
+				if (verticalVelocity > 0) {
+					animator.SetTrigger("EndJumping");
+				}
+				// Running
+				else if (horizontalVelocity > 0) {
+					animator.SetBool("Running", false);
+				}
+			}
+
 		} else {
 			ExecuteCellAction(CellGridManager.Instance.down);
+
+			if (animator) {
+				if (verticalVelocity > 0) {
+					animator.SetTrigger("EndJumping");
+				}
+				// Running
+				else if (horizontalVelocity > 0) {
+					animator.SetBool("Running", false);
+				}
+			}
 		}
 		// If obstacle
 		// If empty
