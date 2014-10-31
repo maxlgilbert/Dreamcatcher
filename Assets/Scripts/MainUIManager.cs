@@ -51,6 +51,12 @@ public class MainUIManager : MonoBehaviour {
 		levelManager = GameObject.Find("Managers").GetComponent<LevelManager>();
 		beatMeterFrameNumber = 0;
 		beatMeterFrameNumberSec = 0;
+
+		int xpos = Screen.width/2 - (beatMeterBar.width/2) + 20 + (beatMeterTarget.width / 2);
+		int ypos = ((Screen.height / 9) - 30 + 2) + (beatMeterTarget.height);
+		beatIndicator.transform.position = Camera.main.ScreenToViewportPoint (new Vector3 (xpos, Screen.height - ypos, 0));
+		beatIndicator.transform.position = new Vector3(beatIndicator.transform.position.x, 0.877f, 0);
+
 		Restart();
 //		SetOverlayTexture();
 
